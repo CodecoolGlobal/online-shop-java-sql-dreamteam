@@ -1,4 +1,7 @@
 package com.codecool.onlineshop.models;
 
-public class Admin {
+public class Admin extends User{
+    public Admin(String name, String password) {
+        super(name, password);
+    }
 }
