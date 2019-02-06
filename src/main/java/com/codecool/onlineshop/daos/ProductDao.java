@@ -20,6 +20,37 @@ public class ProductDao implements IProductDao {
     public ProductDao() {
         databaseConnector = DatabaseConnector.getInstance();
         databaseConnector.connectToDatabase(); // for testing
+        createTables();
+    }
+
+    private void createTables() {
+        String productQuery = "CREATE TABLE IF NOT EXIST Products("
+                            + "id INTEGER PRIMARY KEY "
+                            + "name TEXT NOT NULL"
+                            + "price REAL NOT NULL"
+                            + "amount INTEGER DEFAULT 1"
+                            + "available TEXT DEFAULT 'true'"
+                            + "category_id INTEGER NOT NULL"
+                            + "featured_category_id INTEGER NOT NULL)";
+
+        String categoryQuery = "CREATE TABLE IF NOT EXIST Category("
+                            + "id INTEGER PRIMARY KEY"
+                            + "name TEXT NOT NULL"
+                            + "available TEXT DEFAULT 'true'";
+
+        String featuredQuery = "CREATE TABLE IF NOT EXIST FeaturedCategory("
+                            + "id INTEGER PRIMARY KEY"
+                            + "name TEXT NOT NULL"
+                            + "available TEXT DEFAULT 'true'"
+                            + "expiration_date DATE NOT NULL)";
+
+        try(Statement statement = databaseConnector.getConnection().createStatement()) {
+            statement.executeUpdate(productQuery);
+            statement.executeUpdate(categoryQuery);
+            statement.executeUpdate(featuredQuery);
+        } catch (SQLException e) {
+            throw new DAOException("Cannot create tables");
+        }
     }
     
     public List<Product> getAllProducts() {
@@ -204,6 +235,10 @@ public class ProductDao implements IProductDao {
         } catch (Exception e) {
             throw new DAOException("Problem occured during querying category ID");
         }   
+    }
+
+    public void addProductToDiscount(String discount, String productName) {
+        
     }
 
     private Product createProduct(ResultSet results) throws Exception {
