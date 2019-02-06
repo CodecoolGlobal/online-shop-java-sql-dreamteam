@@ -152,6 +152,25 @@ public class ProductDao implements IProductDao {
         }
     }
 
+    public void editProduct(int productID, List<String> edit, int categoryId) {
+        String query = "UPDATE Products SET 'name' = ?, 'price' = ?, 'amount' = ?, 'available' = ?, category_id = ? WHERE 'id' = ?";
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
+
+            statement.setString(1, edit.get(0));
+            statement.setDouble(2, Double.valueOf(edit.get(1)));
+            statement.setInt(3, Integer.valueOf(edit.get(2)));
+            statement.setString(4, edit.get(3));
+            statement.setInt(5, categoryId);
+            statement.setInt(6, productID);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        }
+    }
+
     private List<Product> getProductsByCategory(int categoryId) {
         String productsQuery = "SELECT * FROM Category JOIN Product ON Category.id = Product.category_id "
                                 + "WHERE Category.id = ?";
