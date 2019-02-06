@@ -9,6 +9,11 @@ public class Basket {
     private int id;
     private List<Product> list = new ArrayList<>();;
 
+
+
+    public Basket(){
+        
+    }
     public Basket(int id, List<Product> list){
         this.id = id;
         this.list = list;

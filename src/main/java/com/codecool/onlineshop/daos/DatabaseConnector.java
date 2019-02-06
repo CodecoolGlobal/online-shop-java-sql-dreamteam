@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 
 public class DatabaseConnector {
     private static DatabaseConnector single_instance = null;
-    Connection c;
+    private Connection c;
 
     private DatabaseConnector(){
 
