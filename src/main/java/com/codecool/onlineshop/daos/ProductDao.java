@@ -28,19 +28,16 @@ public class ProductDao implements IProductDao {
     
             List<Product> products = new ArrayList<>();
             while(results.next()){
-                Category category = getCategoryById(results.getInt("category_id"));
-                Product product = new Product(results.getInt("id"),
-                        results.getString("name"),
-                        results.getDouble("price"),
-                        results.getInt("amount"),
-                        Boolean.valueOf(results.getString("available")),
-                        category);
+                Product product = createProduct(results);
+                products.add(product);
             }
 
             return products;
         } catch (SQLException e) {
             
-        }    
+        } catch (Exception e) {
+
+        }
     }
 
     public List<Product> getAvailableProducts() {
@@ -64,9 +61,65 @@ public class ProductDao implements IProductDao {
             if (id.intValue() == 0) {
                 throw new DAOException("Cannot find category ID of such category name");
             }
+            return id;
         } catch (SQLException e) {
             throw new DAOException("Problem occured during querying category ID");
         }    
+    }
+
+    public Category getCategoryByID(int id) {
+        try{
+            String productsQuery = "SELECT * FROM Category WHERE id = ?;";
+            PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
+            statement.setInt(1, id);
+    
+            List<Product> products = getProductsByCategory(id);
+            ResultSet results = statement.executeQuery();
+            results.next();
+            Category category = new Category(id,
+                    results.getString("name"),
+                    Boolean.getBoolean(results.getString("available")),
+                    products);
+
+            return category;
+            
+        } catch (SQLException e) {
+            throw new DAOException("Problem occured during querying category ID");
+        } catch (Exception e) {
+            throw new DAOException("Problem occured during querying category ID");
+        }   
+    }
+
+    private List<Product> getProductsByCategory(int categoryId) {
+        try{
+            String productsQuery = "SELECT * FROM Category JOIN Product ON Category.id = Product.category_id "
+                                    + "WHERE Category.id = ?";
+            PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
+            statement.setInt(1, categoryId);
+    
+            ResultSet results = statement.executeQuery();
+            List<Product> products = new ArrayList<>();
+            while(results.next()){
+                Product product = createProduct(results);
+                products.add(product);
+            }
+            return products;
+        } catch (SQLException e) {
+            throw new DAOException("Problem occured during querying category ID");
+        } catch (Exception e) {
+            throw new DAOException("Problem occured during querying category ID");
+        }   
+    }
+
+    private Product createProduct(ResultSet results) throws Exception {
+        Category category = getCategoryById(results.getInt("category_id"));
+        Product product = new Product(results.getInt("id"),
+                results.getString("name"),
+                results.getDouble("price"),
+                results.getInt("amount"),
+                Boolean.valueOf(results.getString("available")),
+                category);
+        return product;
     }
 
 }

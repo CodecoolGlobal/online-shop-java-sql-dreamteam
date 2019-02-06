@@ -13,7 +13,13 @@ public class Category {
 
     public Category(String name){
         this.name = name;
+    }
 
+    public Category(int id, String name, boolean isAvailable, List<Product> products) {
+        this.id = id;
+        this.name = name;
+        this.isAvailable = isAvailable;
+        this.list = products;
     }
 
     public int getId() {
