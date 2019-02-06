@@ -20,12 +20,10 @@ public class ProductDao implements IProductDao {
     }
     
     public List<Product> getAllProducts() {
-        try{
-            String productsQuery = "SELECT * FROM Products;";
-            Statement statement = databaseConnector.c.createStatement();
-    
-            ResultSet results = statement.executeQuery(productsQuery);
-    
+        String productsQuery = "SELECT * FROM Products;";
+        try (Statement statement = databaseConnector.c.createStatement();
+            ResultSet results = statement.executeQuery(productsQuery)) {
+            
             List<Product> products = new ArrayList<>();
             while(results.next()){
                 Product product = createProduct(results);
@@ -50,12 +48,11 @@ public class ProductDao implements IProductDao {
     }
 
     public Integer getCategoryIdByName(String name) {
-        try{
-            String productsQuery = "SELECT * FROM Category WHERE name = ?;";
-            PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
+        String productsQuery = "SELECT * FROM Category WHERE name = ?;";
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
+            ResultSet results = statement.executeQuery();) {
+            
             statement.setString(1, name);
-    
-            ResultSet results = statement.executeQuery();
             results.next();
             Integer id = results.getInt("id");
             if (id.intValue() == 0) {
@@ -68,13 +65,12 @@ public class ProductDao implements IProductDao {
     }
 
     public Category getCategoryByID(int id) {
-        try{
-            String productsQuery = "SELECT * FROM Category WHERE id = ?;";
-            PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
+        String productsQuery = "SELECT * FROM Category WHERE id = ?;";
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
+            ResultSet results = statement.executeQuery()) {
+            
             statement.setInt(1, id);
-    
             List<Product> products = getProductsByCategory(id);
-            ResultSet results = statement.executeQuery();
             results.next();
             Category category = new Category(id,
                     results.getString("name"),
@@ -93,7 +89,7 @@ public class ProductDao implements IProductDao {
     public Product getProductById(int id) {
         String productsQuery = "SELECT * FROM Products WHERE id = ?;";
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
-            ResultSet results = statement.executeQuery();) {  
+            ResultSet results = statement.executeQuery()) {  
 
             statement.setInt(1, id);
             results.next();
@@ -108,13 +104,12 @@ public class ProductDao implements IProductDao {
     }
 
     private List<Product> getProductsByCategory(int categoryId) {
-        try{
-            String productsQuery = "SELECT * FROM Category JOIN Product ON Category.id = Product.category_id "
-                                    + "WHERE Category.id = ?";
-            PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
+        String productsQuery = "SELECT * FROM Category JOIN Product ON Category.id = Product.category_id "
+                                + "WHERE Category.id = ?";
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
+            ResultSet results = statement.executeQuery()) {
+                
             statement.setInt(1, categoryId);
-    
-            ResultSet results = statement.executeQuery();
             List<Product> products = new ArrayList<>();
             while(results.next()){
                 Product product = createProduct(results);
