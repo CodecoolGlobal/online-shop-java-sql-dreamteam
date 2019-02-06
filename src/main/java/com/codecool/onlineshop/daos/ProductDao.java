@@ -20,10 +20,15 @@ public class ProductDao implements IProductDao {
     public ProductDao() {
         databaseConnector = DatabaseConnector.getInstance();
         databaseConnector.connectToDatabase(); // for testing
-        createTables();
+        try {
+            createTables();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
     }
 
-    private void createTables() {
+    private void createTables() throws DAOException {
         String productQuery = "CREATE TABLE IF NOT EXIST Products("
                             + "id INTEGER PRIMARY KEY "
                             + "name TEXT NOT NULL"
@@ -52,8 +57,12 @@ public class ProductDao implements IProductDao {
             throw new DAOException("Cannot create tables");
         }
     }
+
+    public boolean checkIfAvailable(String productName) throws DAOException {
+        return true;
+    }
     
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts() throws DAOException{
         String productsQuery = "SELECT * FROM Products;";
         try (Statement statement = databaseConnector.c.createStatement();
             ResultSet results = statement.executeQuery(productsQuery)) {
@@ -72,7 +81,7 @@ public class ProductDao implements IProductDao {
         }
     }
 
-    public List<Product> getAvailableProducts() {
+    public List<Product> getAvailableProducts() throws DAOException {
         List<Product> products = getAllProducts();
         List<Product> availableProducts = products.stream()
             .filter(p -> p.isAvailable())
@@ -81,7 +90,7 @@ public class ProductDao implements IProductDao {
         return availableProducts;
     }
 
-    public Integer getCategoryIdByName(String name) {
+    public Integer getCategoryIdByName(String name) throws DAOException {
         String productsQuery = "SELECT * FROM Category WHERE name = ?;";
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {
             
@@ -98,7 +107,7 @@ public class ProductDao implements IProductDao {
         }    
     }
 
-    public Category getCategoryByID(int id) {
+    public Category getCategoryById(int id) throws DAOException {
         String productsQuery = "SELECT * FROM Category WHERE id = ?;";
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {
             
@@ -120,7 +129,7 @@ public class ProductDao implements IProductDao {
         }   
     }
 
-    public Product getProductById(int id) {
+    public Product getProductById(int id) throws DAOException {
         String productsQuery = "SELECT * FROM Products WHERE id = ?;";
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {  
             statement.setInt(1, id);
@@ -136,7 +145,7 @@ public class ProductDao implements IProductDao {
         }
     }
 
-    public void updateCategoryName(String oldName, String newName) {
+    public void updateCategoryName(String oldName, String newName) throws DAOException {
         String query = "UPDATE Category SET 'name' = ? WHERE 'name' = ?";
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
 
@@ -151,7 +160,7 @@ public class ProductDao implements IProductDao {
         }
     }
 
-    public void addNewProduct(List<String> newProductData, int categoryId) {
+    public void addNewProduct(List<String> newProductData, int categoryId) throws DAOException {
         String query = "INSERT INTO Products('name', 'price', 'amount', 'available', category_id) "
                         + "VALUES ?, ?, ?, ?, ?";
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
@@ -170,7 +179,7 @@ public class ProductDao implements IProductDao {
         }
     }
 
-    public void addNewCategory(String name) {
+    public void addNewCategory(String name) throws DAOException {
         String query = "INSERT INTO Category('name') VALUES ?";
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
 
@@ -183,7 +192,7 @@ public class ProductDao implements IProductDao {
         }
     }
 
-    public void editProduct(int productID, List<String> edit, int categoryId) {
+    public void editProduct(int productID, List<String> edit, int categoryId) throws DAOException {
         String query = "UPDATE Products SET 'name' = ?, 'price' = ?, 'amount' = ?, 'available' = ?, category_id = ? WHERE 'id' = ?";
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
 
@@ -202,7 +211,7 @@ public class ProductDao implements IProductDao {
         }
     }
 
-    public void deactivateProduct(String name) {
+    public void deactivateProduct(String name) throws DAOException {
         String query = "UPDATE Products SET 'available' = 'false' WHERE 'name' = ?";
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
 
@@ -216,7 +225,7 @@ public class ProductDao implements IProductDao {
         }
     }
 
-    private List<Product> getProductsByCategory(int categoryId) {
+    private List<Product> getProductsByCategory(int categoryId) throws DAOException {
         String productsQuery = "SELECT * FROM Category JOIN Product ON Category.id = Product.category_id "
                                 + "WHERE Category.id = ?";
 
