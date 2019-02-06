@@ -23,6 +23,7 @@ public class MainView {
                 "(4) Remove a product \n" + "(5) Place an order \n" + "(6) See my previous orders \n" +
                 "(7) List available products \n" + "(8) List category-based products \n" +
                 "(9) Check product availability \n"  + "(0) Exit \n");
+
     }
 
     public void printAdminMenu(){
