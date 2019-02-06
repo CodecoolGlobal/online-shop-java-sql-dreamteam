@@ -139,6 +139,19 @@ public class ProductDao implements IProductDao {
         }
     }
 
+    public void addNewCategory(String name) {
+        String query = "INSERT INTO Category('name') VALUES ?";
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
+
+            statement.setString(1, name);
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        }
+    }
+
     private List<Product> getProductsByCategory(int categoryId) {
         String productsQuery = "SELECT * FROM Category JOIN Product ON Category.id = Product.category_id "
                                 + "WHERE Category.id = ?";
