@@ -49,10 +49,10 @@ public class ProductDao implements IProductDao {
 
     public Integer getCategoryIdByName(String name) {
         String productsQuery = "SELECT * FROM Category WHERE name = ?;";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
-            ResultSet results = statement.executeQuery();) {
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {
             
             statement.setString(1, name);
+            ResultSet results = statement.executeQuery();
             results.next();
             Integer id = results.getInt("id");
             if (id.intValue() == 0) {
@@ -66,10 +66,10 @@ public class ProductDao implements IProductDao {
 
     public Category getCategoryByID(int id) {
         String productsQuery = "SELECT * FROM Category WHERE id = ?;";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
-            ResultSet results = statement.executeQuery()) {
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {
             
             statement.setInt(1, id);
+            ResultSet results = statement.executeQuery();
             List<Product> products = getProductsByCategory(id);
             results.next();
             Category category = new Category(id,
@@ -88,13 +88,27 @@ public class ProductDao implements IProductDao {
 
     public Product getProductById(int id) {
         String productsQuery = "SELECT * FROM Products WHERE id = ?;";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
-            ResultSet results = statement.executeQuery()) {  
-
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {  
             statement.setInt(1, id);
+            ResultSet results = statement.executeQuery();
             results.next();
             Product product = createProduct(results);
             return product;
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        }
+    }
+
+    public void updateCategoryName(String oldName, String newName) {
+        String query = "UPDATE Category SET 'name' = ? WHERE 'name' = ?";
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
+
+            statement.setString(1, newName);
+            statement.setString(2, oldName);
+            statement.executeUpdate();
 
         } catch (SQLException e) {
             throw new DAOException("message");
