@@ -1,7 +1,5 @@
 package com.codecool.onlineshop.daos;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,10 +17,8 @@ public class ProductDao implements IProductDao {
 
     public ProductDao() {
         databaseConnector = DatabaseConnector.getInstance();
-        databaseConnector.connectToDatabase(); // for testing
         try {
             createTables();
-            // databaseConnector.getConnection().close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,22 +66,36 @@ public class ProductDao implements IProductDao {
     
     public List<Product> getAllProducts() throws DAOException{
         String productsQuery = "SELECT * FROM Products;";
-        try (Statement statement = databaseConnector.c.createStatement();
-            ResultSet results = statement.executeQuery(productsQuery)) {
+        Statement statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.createStatement();
+            results = statement.executeQuery(productsQuery);
             
             List<Product> products = new ArrayList<>();
             while(results.next()){
                 Product product = createProduct(results);
                 products.add(product);
             }
-
             return products;
+
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DAOException("message");
         } catch (Exception e) {
-            e.printStackTrace();
             throw new DAOException("message");
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
         }
     }
 
@@ -100,10 +110,13 @@ public class ProductDao implements IProductDao {
 
     public Integer getCategoryIdByName(String name) throws DAOException {
         String productsQuery = "SELECT * FROM Category WHERE name = ?;";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {
-            
+        PreparedStatement  statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(productsQuery);
             statement.setString(1, name);
-            ResultSet results = statement.executeQuery();
+            results = statement.executeQuery();
             results.next();
             Integer id = results.getInt("id");
             if (id.intValue() == 0) {
@@ -112,15 +125,30 @@ public class ProductDao implements IProductDao {
             return id;
         } catch (SQLException e) {
             throw new DAOException("Problem occured during querying category ID");
-        }    
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
     }
 
     public Category getCategoryById(int id) throws DAOException {
         String productsQuery = "SELECT * FROM Category WHERE id = ?;";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {
-            
+        PreparedStatement  statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(productsQuery);
             statement.setInt(1, id);
-            ResultSet results = statement.executeQuery();
+            results = statement.executeQuery();
             results.next();
             Category category = new Category(id,
                     results.getString("name"),
@@ -129,19 +157,33 @@ public class ProductDao implements IProductDao {
             return category;
             
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DAOException("Problem occured during querying category ID");
         } catch (Exception e) {
-            e.printStackTrace();
             throw new DAOException("Problem occured during querying category ID");
-        }   
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
     }
 
     public Product getProductById(int id) throws DAOException {
         String productsQuery = "SELECT * FROM Products WHERE id = ?;";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {  
+        PreparedStatement  statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(productsQuery);
             statement.setInt(1, id);
-            ResultSet results = statement.executeQuery();
+            results = statement.executeQuery();
             results.next();
             Product product = createProduct(results);
             return product;
@@ -150,13 +192,27 @@ public class ProductDao implements IProductDao {
             throw new DAOException("message");
         } catch (Exception e) {
             throw new DAOException("message");
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
         }
     }
 
     public void updateCategoryName(String oldName, String newName) throws DAOException {
         String query = "UPDATE Category SET name = ? WHERE name = ?";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
-
+        PreparedStatement statement = null;
+        try {  
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
             statement.setString(1, newName);
             statement.setString(2, oldName);
             statement.executeUpdate();
@@ -165,14 +221,25 @@ public class ProductDao implements IProductDao {
             throw new DAOException("message");
         } catch (Exception e) {
             throw new DAOException("message");
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
         }
     }
 
     public void addNewProduct(List<String> newProductData, int categoryId) throws DAOException {
         String query = "INSERT INTO Products(name, price, amount, available, category_id, featured_category_id) "
                         + "VALUES (?, ?, ?, ?, ?, 0)";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
-
+        PreparedStatement statement = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
             statement.setString(1, newProductData.get(0));
             statement.setDouble(2, Double.valueOf(newProductData.get(1)));
             statement.setInt(3, Integer.valueOf(newProductData.get(2)));
@@ -181,32 +248,51 @@ public class ProductDao implements IProductDao {
             statement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DAOException("message");
         } catch (Exception e) {
-            e.printStackTrace();
             throw new DAOException("message");
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
         }
     }
 
     public void addNewCategory(String name) throws DAOException {
         String query = "INSERT INTO Category(name) VALUES (?)";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
-
+        PreparedStatement statement = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
             statement.setString(1, name);
             statement.executeUpdate();
-
         } catch (SQLException e) {
             throw new DAOException("message");
         } catch (Exception e) {
             throw new DAOException("message");
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
         }
     }
 
     public void editProduct(int productID, List<String> edit, int categoryId) throws DAOException {
         String query = "UPDATE Products SET name = ?, price = ?, amount = ?, available = ?, category_id = ? WHERE id = ?";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
-
+        PreparedStatement statement = null;
+        try {  
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
             statement.setString(1, edit.get(0));
             statement.setDouble(2, Double.valueOf(edit.get(1)));
             statement.setInt(3, Integer.valueOf(edit.get(2)));
@@ -219,13 +305,24 @@ public class ProductDao implements IProductDao {
             throw new DAOException("message");
         } catch (Exception e) {
             throw new DAOException("message");
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
         }
     }
 
     public void deactivateProduct(String name) throws DAOException {
         String query = "UPDATE Products SET available = 'false' WHERE name = ?";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
-
+        PreparedStatement statement = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
             statement.setString(1, name);
             statement.executeUpdate();
 
@@ -233,13 +330,22 @@ public class ProductDao implements IProductDao {
             throw new DAOException("message");
         } catch (Exception e) {
             throw new DAOException("message");
+        } try {
+            if (statement != null) {
+                statement.close();
+            }
+            databaseConnector.getConnection().close();
+        } catch (SQLException e) {
+
         }
     }
 
     public void activateProduct(String name) throws DAOException {
         String query = "UPDATE Products SET available = 'true' WHERE name = ?";
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
-
+        PreparedStatement statement = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
             statement.setString(1, name);
             statement.executeUpdate();
 
@@ -247,6 +353,13 @@ public class ProductDao implements IProductDao {
             throw new DAOException("message");
         } catch (Exception e) {
             throw new DAOException("message");
+        } try {
+            if (statement != null) {
+                statement.close();
+            }
+            databaseConnector.getConnection().close();
+        } catch (SQLException e) {
+
         }
     }
 
@@ -257,11 +370,13 @@ public class ProductDao implements IProductDao {
     private List<Product> getProductsByCategory(int categoryId) throws DAOException {
         String productsQuery = "SELECT * FROM Category JOIN Products ON Category.id = Products.category_id "
                                 + "WHERE Category.id = ?";
-
-        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery)) {
-                
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(productsQuery);   
             statement.setInt(1, categoryId);
-            ResultSet results = statement.executeQuery();
+            results = statement.executeQuery();
             List<Product> products = new ArrayList<>();
             while(results.next()){
                 Product product = createProduct(results);
@@ -269,12 +384,22 @@ public class ProductDao implements IProductDao {
             }
             return products;
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DAOException("Problem occured during querying category ID");
         } catch (Exception e) {
-            e.printStackTrace();
             throw new DAOException("Problem occured during querying category ID");
-        }   
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
     }
 
     private Product createProduct(ResultSet results) throws Exception {
