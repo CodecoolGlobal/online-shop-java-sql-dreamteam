@@ -168,10 +168,25 @@ public class UserDao implements IUserDao {
         } catch (SQLException e) {
             throw new DAOException("Wrong login or password");
         }
-
     }
 
-
+    @Override
+    public void addCustomer(String login, String password){
+        Statement stmt = null;
+        try {
+            databaseConnector.connectToDatabase();
+            databaseConnector.getConnection().setAutoCommit(false);
+            stmt = databaseConnector.getConnection().createStatement();
+            String sql = "INSERT INTO USERS(LOGIN, PASSWORD, PERMISSION) "
+                        + "VALUES ('" + login + "', " + password + ", 'C'); ";
+            stmt.executeUpdate(sql);
+            databaseConnector.getConnection().commit();
+            stmt.close();
+            databaseConnector.getConnection().close();
+        } catch (SQLException e) {
+            throw new DAOException("Wrong login or password");
+        }
+    }
 
 
     
