@@ -15,11 +15,10 @@ public class Category {
         this.name = name;
     }
 
-    public Category(int id, String name, boolean isAvailable, List<Product> products) {
+    public Category(int id, String name, boolean isAvailable) {
         this.id = id;
         this.name = name;
         this.isAvailable = isAvailable;
-        this.list = products;
     }
 
     public int getId() {
