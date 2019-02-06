@@ -1,5 +1,7 @@
 package com.codecool.onlineshop.daos;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +19,7 @@ public class ProductDao implements IProductDao {
 
     public ProductDao() {
         databaseConnector = DatabaseConnector.getInstance();
+        databaseConnector.connectToDatabase(); // for testing
     }
     
     public List<Product> getAllProducts() {
@@ -117,9 +120,29 @@ public class ProductDao implements IProductDao {
         }
     }
 
+    public void addNewProduct(List<String> newProductData, int categoryId) {
+        String query = "INSERT INTO Products('name', 'price', 'amount', 'available', category_id) "
+                        + "VALUES ?, ?, ?, ?, ?";
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
+
+            statement.setString(1, newProductData.get(0));
+            statement.setDouble(2, Double.valueOf(newProductData.get(1)));
+            statement.setInt(3, Integer.valueOf(newProductData.get(2)));
+            statement.setString(4, newProductData.get(3));
+            statement.setInt(5, categoryId);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        }
+    }
+
     private List<Product> getProductsByCategory(int categoryId) {
         String productsQuery = "SELECT * FROM Category JOIN Product ON Category.id = Product.category_id "
                                 + "WHERE Category.id = ?";
+
         try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
             ResultSet results = statement.executeQuery()) {
                 
