@@ -34,9 +34,9 @@ public class ProductDao implements IProductDao {
 
             return products;
         } catch (SQLException e) {
-            
+            throw new DAOException("message");
         } catch (Exception e) {
-
+            throw new DAOException("message");
         }
     }
 
@@ -88,6 +88,23 @@ public class ProductDao implements IProductDao {
         } catch (Exception e) {
             throw new DAOException("Problem occured during querying category ID");
         }   
+    }
+
+    public Product getProductById(int id) {
+        String productsQuery = "SELECT * FROM Products WHERE id = ?;";
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(productsQuery);
+            ResultSet results = statement.executeQuery();) {  
+
+            statement.setInt(1, id);
+            results.next();
+            Product product = createProduct(results);
+            return product;
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        }
     }
 
     private List<Product> getProductsByCategory(int categoryId) {
