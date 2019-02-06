@@ -32,5 +32,19 @@ public class Category {
         return list;
     }
 
+    public String categoryToString(){
+        StringBuilder string = null;
+        string.append("id: ");
+        string.append(id);
+        string.append(" name: ");
+        string.append(name);
+        string.append(" isAvailable: ");
+        string.append(isAvailable);
+        string.append("\n Products in category: ");
+        for (Product product : list){
+            string.append("\n" + product.prodctToString());
+        }
 
+        return string.toString();
+    }
 }

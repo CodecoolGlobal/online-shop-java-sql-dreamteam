@@ -18,7 +18,7 @@ public class MainView {
         println("Welcome to online shop" + "(1) Log in" + "(2) Create new user" + "(3) Exit\n");
     }
 
-    public void userMenu(){
+    public void customerMenu(){
         println("(1) Show basket" + "(2) Add product to basket" + "(3) Edit product quantity" + "(4) Remove a product" +
                 "(5) Place an order" + "(6) See my previous orders" + "(7) List available products" +
                 "(8) List category-based products" + "(9) Check product availability");
