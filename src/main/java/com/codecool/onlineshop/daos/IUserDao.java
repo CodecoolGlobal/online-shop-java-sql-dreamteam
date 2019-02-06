@@ -16,4 +16,6 @@ public interface IUserDao {
     void addOrder(String userLogin, String status, Date created_at, Date paid_at);
 
     List<Order> getAllOrders();
+
+    void addCustomer(String login, String password);
 }
