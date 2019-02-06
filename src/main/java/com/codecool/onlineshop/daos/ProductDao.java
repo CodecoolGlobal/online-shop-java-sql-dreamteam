@@ -171,6 +171,20 @@ public class ProductDao implements IProductDao {
         }
     }
 
+    public void deactivateProduct(String name) {
+        String query = "UPDATE Products SET 'available' = 'false' WHERE 'name' = ?";
+        try (PreparedStatement statement = databaseConnector.c.prepareStatement(query)) {  
+
+            statement.setString(1, name);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        }
+    }
+
     private List<Product> getProductsByCategory(int categoryId) {
         String productsQuery = "SELECT * FROM Category JOIN Product ON Category.id = Product.category_id "
                                 + "WHERE Category.id = ?";
