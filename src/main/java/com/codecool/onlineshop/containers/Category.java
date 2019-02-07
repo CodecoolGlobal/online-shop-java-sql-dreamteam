@@ -38,7 +38,7 @@ public class Category {
     }
 
     public String categoryToString(){
-        StringBuilder string = null;
+        StringBuilder string = new StringBuilder();
         string.append("id: ");
         string.append(id);
         string.append(" name: ");
