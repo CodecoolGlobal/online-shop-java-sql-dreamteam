@@ -47,7 +47,7 @@ public class Category {
         string.append(isAvailable);
         string.append("\n Products in category: ");
         for (Product product : list){
-            string.append("\n" + product.prodctToString());
+            string.append("\n" + product.productToString());
         }
 
         return string.toString();
