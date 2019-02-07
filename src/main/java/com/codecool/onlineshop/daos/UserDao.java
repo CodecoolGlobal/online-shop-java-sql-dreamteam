@@ -11,6 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.text.ParseException;
+
 
 public class UserDao implements IUserDao {
     /*
@@ -58,7 +62,6 @@ public class UserDao implements IUserDao {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Table created successfully");
     }
 
 
@@ -86,7 +89,7 @@ public class UserDao implements IUserDao {
             }
                
         } catch (SQLException e) {
-            throw new DAOException("Wrong login or password");
+            throw new DAOException("Wrong login or password. ");
         }
     }
 
@@ -95,11 +98,13 @@ public class UserDao implements IUserDao {
     public List<Order> getAllOrders() throws DAOException {
         List<Order> orders = new ArrayList<Order>();
         Statement stmt = null;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss"); 
         try {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
             stmt = databaseConnector.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT ORDERS.ID, STATUS, CREATED_AT, PAID_AT, LOGIN, PASSWORD FROM ORDERS  LEFT JOIN USERS ON ORDERS.USER_LOGIN = USERS.LOGIN");
+
             while (rs.next()){
                 Integer id = rs.getInt("ID");
                 String login = rs.getString("login");
@@ -118,8 +123,8 @@ public class UserDao implements IUserDao {
             stmt.close();
             databaseConnector.getConnection().close();
             return orders;
-        } catch (SQLException e) {
-            throw new DAOException("Wrong login or password");
+        } catch (SQLException  | ParseException e) {
+            throw new DAOException("Something went wrong.");
         }
     }
 
@@ -129,22 +134,25 @@ public class UserDao implements IUserDao {
     public List<Order> getOrdersByUserName(String userName) throws DAOException{
         Statement stmt = null;
         List<Order> orders = new ArrayList<Order>();
-
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss"); 
         try {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
             stmt = databaseConnector.getConnection().createStatement();
+
             ResultSet rs = stmt.executeQuery("SELECT ORDERS.ID, STATUS, CREATED_AT, PAID_AT, USER_LOGIN, PASSWORD FROM ORDERS  LEFT JOIN USERS ON ORDERS.USER_LOGIN = USERS.LOGIN WHERE LOGIN = '" + userName + "'");
         while (rs.next()){
             Integer id = rs.getInt("ID");
             String login = rs.getString("user_login");
             String password = rs.getString("password");
+
             Date created_at = new Date(Long.valueOf(rs.getString("created_at")));
             Date paid_at = null;
             if (rs.getString("paid_at") != null) {
                 paid_at = new Date(Long.valueOf(rs.getString("paid_at")));
             }
             String status = rs.getString("status");
+            System.out.println("lol");
             User user = new User(login, password);
             orders.add(new Order(id, null, user, created_at, paid_at, status));
             }
@@ -155,12 +163,14 @@ public class UserDao implements IUserDao {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DAOException("Wrong login or password");
-        }
+        } 
     }
 
     
     @Override
     public void addOrder(String userLogin, String status, Date created_at) throws DAOException{
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        String strDate = dateFormat.format(created_at);
         Statement stmt = null;
         try {
             databaseConnector.connectToDatabase();

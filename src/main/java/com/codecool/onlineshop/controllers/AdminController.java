@@ -4,6 +4,7 @@ import com.codecool.onlineshop.services.ServiceException;
 import com.codecool.onlineshop.views.MainView;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.services.AdminService;
+import com.codecool.onlineshop.containers.*;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class AdminController {
                     addNewCategory();
                     break;
                 case 2:
-                    // Edit category name
+                    editCategoryName();
                     break;
                 case 3:
                     addNewProduct();
@@ -44,7 +45,7 @@ public class AdminController {
                     deactivateProduct();
                     break;
                 case 6:
-                    // Make a discount
+                    getAllOrders();
                     break;
                 case 0:
                     choice = 0;
@@ -57,15 +58,32 @@ public class AdminController {
     }
 
     private void addNewCategory(){
-        mainView.println("Type name of new category: ");
+        mainView.println("These are available categories: \n");
+        mainView.printStringTable(adminService.getCategoryNames());
+        mainView.println("\nType name of new category: ");
         String categoryName = mainView.getStringInput();
         adminService.addNewCategory(categoryName.toLowerCase());
+        mainView.getEmptyInput();
     }
 
     private void addNewProduct(){
         List<String> attributesOfProduct = new ArrayList<>();
+
+        if(adminService.getCategoryNames().size() == 0){
+            mainView.println("There are no categories created yet! You need to create one.");
+            addNewCategory();
+        }
+        mainView.printStringTable(adminService.getCategoryNames());
+        mainView.println("\nPick category which you want add product to: ");
+        int categoryId = mainView.getIntegerInput();
+
+        while(categoryId < 1 || categoryId > adminService.getCategoryNames().size()){
+            mainView.println("Wrong input. Try again.");
+            categoryId = mainView.getIntegerInput();
+        }
+        
         mainView.println("Type name of new product: ");
-        String productName = mainView.getStringInput();
+        String productName = mainView.getStringInput().toLowerCase();
         Boolean isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
 
         while (isProductNameAvailable == false) {
@@ -75,29 +93,34 @@ public class AdminController {
         }
         attributesOfProduct.add(productName);
 
-        mainView.println("Type amount of product: ");
-        Float amount = mainView.getFloatInput();
-        attributesOfProduct.add(amount.toString());
-
         mainView.println("Type price of product: ");
-        Integer price = mainView.getIntegerInput();
+        Float price = mainView.getFloatInput();
         attributesOfProduct.add(price.toString());
+
+        mainView.println("Type amount of product: ");
+        Integer amount = mainView.getIntegerInput();
+        attributesOfProduct.add(amount.toString());
 
         mainView.println("Type availability of product: ");
         Boolean availability = mainView.getBooleanInput();
         attributesOfProduct.add(availability.toString());
 
-        mainView.println("Pick category which you want add product to: ");
-        mainView.printStringTable(adminService.getCategoryNames());
-        int categoryId = mainView.getIntegerInput();
-        System.out.println(attributesOfProduct.toString());
         adminService.addNewProduct(attributesOfProduct, categoryId);
+        mainView.println("Product has been added! ");
+        mainView.getEmptyInput();
     }
 
 
-    // private void editCategoryName(){
-    //     adminService.editCategoryName(categoryName);
-    // }
+    private void editCategoryName(){
+        mainView.println("These are available categories: \n");
+        mainView.printStringTable(adminService.getCategoryNames());
+        mainView.println("\nChoose which category you want to edit(by its name): ");
+        String oldName = mainView.getStringInput();
+        mainView.println("Write new name of category: ");
+        String newName = mainView.getStringInput();
+        adminService.editCategoryName(oldName, newName);
+        mainView.getEmptyInput();
+    }
 
     private void deactivateProduct() {
         printListOfCurrentProducts();
@@ -107,12 +130,18 @@ public class AdminController {
         mainView.println("Product deactivated\n");
     }
 
+
     private void printListOfCurrentProducts() {
         try {
             mainView.printListOfProducts(adminService.getListOfProducts());
         } catch (ServiceException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getAllOrders(){
+        List<Order> orders = adminService.getAllOrders();
+        mainView.printAllOrders(orders);
     }
 
 

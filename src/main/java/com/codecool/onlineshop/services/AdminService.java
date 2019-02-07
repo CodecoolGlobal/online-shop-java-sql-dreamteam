@@ -67,9 +67,8 @@ public class AdminService extends Service {
             System.out.println("Something went wrong!");
         }
         return categoryNames;
-
-
     }
+
 
     public void deactivateProduct(String name) {
         try {
@@ -78,6 +77,7 @@ public class AdminService extends Service {
             e.printStackTrace();
         }
     }
+
 
     public List<Product> getListOfProducts() throws ServiceException {
         try {
@@ -88,11 +88,44 @@ public class AdminService extends Service {
     }
 
 
+    public void editCategoryName(String oldName, String newName){
+        try {
+            productDao.getCategoryIdByName(newName);
+            System.out.println("There is already that category in database!");
+        } catch (DAOException e) {
+            try {
+                List<String> categoryNames = getCategoryNames();
+                if (categoryNames.contains(oldName)){
+                    productDao.updateCategoryName(oldName, newName);
+                    System.out.println("Category has been changed! ");
+                }
+                else{
+                    System.out.println("There is no such category to update!");
+                }   
+            } catch (DAOException f) {
+                System.out.println("Something went wrong");
+            }
+        }
+    }
+
+    public List<Order> getAllOrders(){
+        List<Order> orders = new ArrayList<>();
+        try {
+            orders = userDao.getAllOrders();
+        } 
+        catch (DAOException e) {
+            System.out.println("Something went wrong. ");
+        }
+        return orders;
+    }
+
+
 }
 
 
 
 
+            
 
 
 

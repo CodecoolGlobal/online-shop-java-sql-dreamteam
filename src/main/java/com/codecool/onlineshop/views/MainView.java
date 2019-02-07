@@ -4,6 +4,7 @@ import com.codecool.onlineshop.models.Product;
 
 import java.util.Scanner;
 import java.util.List;
+import com.codecool.onlineshop.containers.*;
 
 public class MainView {
     protected Scanner scanner = new Scanner(System.in);
@@ -31,7 +32,7 @@ public class MainView {
 
     public void printAdminMenu() {
         println("(1) Create a new category \n" + "(2) Edit category name \n" + "(3) Add new product \n" +
-                "(4) Edit a product \n" + "(5) Deactivate a product \n" + "(6) Make a discount \n" + "(0) Exit \n");
+                "(4) Edit a product \n" + "(5) Deactivate a product \n" + "(6) Show all orders \n" + "(0) Exit \n");
     }
 
     public int getIntegerInput() {
@@ -106,9 +107,17 @@ public class MainView {
 
     public void printListOfProducts(List<Product> listOfProducts) {
         for (Product p : listOfProducts) {
-            System.out.println(p.toString());
+            System.out.println(p.productToString());
+        }
+    }
+
+    public void printAllOrders(List<Order> orders){
+        System.out.printf("%-15s%-15s%-30s%-15s%-15s%-15s\n", "Id", "User Name", "Order created at", "Status", "Payment", "Order paid at" );
+        for (Order order : orders) {
+            System.out.printf("%-15s%-15s%-30s%-15s%-15s%-15s\n", order.getId(), order.getUser().getName(), order.getOrderCreatedAt(), order.getStatus(), order.getPaid(), order.getOrderPayAt());
+
         }
     }
 
 
-}
+} 

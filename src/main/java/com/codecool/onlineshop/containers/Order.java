@@ -32,6 +32,7 @@ public class Order {
         this.orderPayAt = orderPayAt;
     }
 
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Order id: ");
@@ -48,6 +49,30 @@ public class Order {
             sb.append(df.format(orderPayAt));
         }
         return sb.toString();
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public User getUser(){
+        return user;
+    }
+
+    public Date getOrderCreatedAt(){
+        return orderCreatedAt;
+    }
+
+    public boolean getPaid(){
+        return paid;
+    }
+
+    public Date getOrderPayAt(){
+        return orderPayAt;
+    }
+
+    public String getStatus(){
+        return status;
     }
 
 
