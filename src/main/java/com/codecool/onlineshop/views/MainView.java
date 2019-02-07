@@ -52,7 +52,6 @@ public class MainView {
         return availability;
     }
 
-
     public float getFloatInput() {
         while (!scanner.hasNextFloat()) {
             println("Wrong input. Float required.");

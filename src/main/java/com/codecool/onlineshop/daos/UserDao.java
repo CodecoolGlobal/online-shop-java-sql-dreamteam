@@ -65,7 +65,6 @@ public class UserDao implements IUserDao {
     @Override
     public User getUser(String login, String password) throws DAOException{
         Statement stmt = null;
-
         try {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
