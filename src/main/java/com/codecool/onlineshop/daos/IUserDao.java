@@ -9,13 +9,13 @@ import java.util.Date;
 
 public interface IUserDao {
 
-    User getUser(String login, String password);
+    User getUser(String login, String password) throws DAOException;
 
-    List<Order> getOrdersByUserName(String userName);
+    List<Order> getOrdersByUserName(String userName) throws DAOException;
 
-    void addOrder(String userLogin, String status, Date created_at, Date paid_at);
+    void addOrder(String userLogin, String status, Date created_at, Date paid_at) throws DAOException;
 
-    List<Order> getAllOrders();
+    List<Order> getAllOrders() throws DAOException;
 
-    void addCustomer(String login, String password);
+    void addCustomer(String login, String password) throws DAOException;
 }
