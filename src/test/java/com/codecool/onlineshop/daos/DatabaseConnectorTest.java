@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DatabaseConnectorTest {
 
     @Test
-    public void getInstance() {
+    void getInstance() {
         DatabaseConnector a = DatabaseConnector.getInstance();
         assertEquals(DatabaseConnector.single_instance, a);
     }
