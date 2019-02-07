@@ -1,5 +1,7 @@
 package com.codecool.onlineshop.views;
 
+import com.codecool.onlineshop.models.Product;
+
 import java.util.Scanner;
 import java.util.List;
 
@@ -19,17 +21,17 @@ public class MainView {
         println("Welcome to online shop \n" + "(1) Log in \n" + "(2) Create new user\n" + "(0) Exit \n");
     }
 
-    public void printCustomerMenu(){
+    public void printCustomerMenu() {
         println("(1) Show basket \n" + "(2) Add product to basket \n" + "(3) Edit product quantity \n" +
                 "(4) Remove a product \n" + "(5) Place an order \n" + "(6) See my previous orders \n" +
                 "(7) List available products \n" + "(8) List category-based products \n" +
-                "(9) Check product availability \n"  + "(0) Exit \n");
+                "(9) Check product availability \n" + "(0) Exit \n");
 
     }
 
-    public void printAdminMenu(){
+    public void printAdminMenu() {
         println("(1) Create a new category \n" + "(2) Edit category name \n" + "(3) Add new product \n" +
-                "(4) Edit a product \n" + "(5) Deactivate a product \n" + "(6) Make a discount \n"  + "(0) Exit \n");
+                "(4) Edit a product \n" + "(5) Deactivate a product \n" + "(6) Make a discount \n" + "(0) Exit \n");
     }
 
     public int getIntegerInput() {
@@ -85,9 +87,9 @@ public class MainView {
     }
 
 
-    public void printStringTable (List<String> list){
+    public void printStringTable(List<String> list) {
         for (String item : list) {
-           System.out.println(item);
+            System.out.println(item);
         }
     }
 
@@ -102,6 +104,11 @@ public class MainView {
         return number;
     }
 
+    public void printListOfProducts(List<Product> listOfProducts) {
+        for (Product p : listOfProducts) {
+            System.out.println(p.toString());
+        }
+    }
 
 
 }

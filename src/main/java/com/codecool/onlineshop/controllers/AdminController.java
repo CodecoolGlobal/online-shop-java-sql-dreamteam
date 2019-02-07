@@ -1,11 +1,12 @@
 package com.codecool.onlineshop.controllers;
 
+import com.codecool.onlineshop.services.ServiceException;
 import com.codecool.onlineshop.views.MainView;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.services.AdminService;
+
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class AdminController {
     private MainView mainView;
@@ -13,7 +14,7 @@ public class AdminController {
     AdminService adminService;
 
 
-    public AdminController(User admin){
+    public AdminController(User admin) {
         this.mainView = new MainView();
         this.admin = admin;
         this.adminService = new AdminService(admin);
@@ -38,12 +39,12 @@ public class AdminController {
                     List<String> attributesOfProduct = new ArrayList<>();
                     mainView.println("Type name of new product: ");
                     String productName = mainView.getStringInput();
-                    Boolean isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
+                    boolean isProductNameAvailable = adminService.checkIfProductInDataBase(productName);
 
-                    while (isProductNameAvailable == false) {
+                    while (!isProductNameAvailable) {
                         mainView.println("There is already that product in database! Try another one: ");
                         productName = mainView.getStringInput();
-                        isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
+                        isProductNameAvailable = adminService.checkIfProductInDataBase(productName);
                     }
                     attributesOfProduct.add(productName);
 
@@ -70,7 +71,7 @@ public class AdminController {
                     // Edit product
                     break;
                 case 5:
-                    // Deactivate a product
+                    deactivateProduct();
                     break;
                 case 6:
                     // Make a discount
@@ -85,9 +86,21 @@ public class AdminController {
         }
     }
 
+    private void deactivateProduct() {
+        printListOfCurrentProducts();
+        mainView.println("Choose product to deactivate: ");
+        adminService.deactivateProduct(mainView.getStringInput());
+        mainView.clearScreen();
+        mainView.println("Product deactivated\n");
+    }
 
-
-
+    private void printListOfCurrentProducts() {
+        try {
+            mainView.printListOfProducts(adminService.getListOfProducts());
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }
