@@ -124,4 +124,15 @@ public class CustomerService extends Service {
         products = products.stream().filter(p -> p.getCategory().getId() == categoryId).collect(Collectors.toList());
         return products;
     }
+
+    public Product getProductByName(String productName) throws DAOException, ServiceException{
+        List<Product> products = productDao.getAvailableProducts();
+        for (Product product : products) {
+            if(product.getName().equals(productName)){
+                return product;
+            }
+        }
+        throw new ServiceException("Product does not exists.");
+
+    }
 }

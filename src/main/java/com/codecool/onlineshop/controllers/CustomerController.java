@@ -63,6 +63,7 @@ public class CustomerController {
                     break;
                 case 9:
                     // Check product availability
+                    checkIfProductExists();
                     break;
                 case 0:
                     choice = 0;
@@ -71,6 +72,21 @@ public class CustomerController {
                 default:
                     System.out.println("Wrong choice!");
             }
+        }
+    }
+
+    private void checkIfProductExists() {
+        mainView.println("Find product availability\nEnter product name:");
+        String name = mainView.getStringInput().trim().toLowerCase();
+        try {
+            Product product = service.getProductByName(name);
+            mainView.println("-----------------");
+            mainView.println("Product found: ");
+            mainView.println(product.productToString());
+        } catch (DAOException e) {
+            mainView.println(e.getMessage());
+        } catch (ServiceException e) {
+            mainView.println(e.getMessage());
         }
     }
 
