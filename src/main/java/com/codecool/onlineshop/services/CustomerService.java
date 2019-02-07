@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class CustomerService extends Service {
     private Customer customer;
@@ -115,5 +116,12 @@ public class CustomerService extends Service {
     public List<Order> getCustomerOrders() throws DAOException{
         List<Order> orders = userDao.getOrdersByUserName(customer.getName());
         return orders;
+    }
+
+    public List<Product> getProductByCategory(String categoryName) throws DAOException {
+        List<Product> products = productDao.getAvailableProducts();
+        int categoryId = productDao.getCategoryIdByName(categoryName);
+        products = products.stream().filter(p -> p.getCategory().getId() == categoryId).collect(Collectors.toList());
+        return products;
     }
 }

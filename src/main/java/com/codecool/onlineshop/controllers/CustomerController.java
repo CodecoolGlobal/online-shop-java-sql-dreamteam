@@ -59,6 +59,7 @@ public class CustomerController {
                     break;
                 case 8:
                     // List category-based products
+                    listProductsByCategory();
                     break;
                 case 9:
                     // Check product availability
@@ -71,6 +72,24 @@ public class CustomerController {
                     System.out.println("Wrong choice!");
             }
         }
+    }
+
+    private void listProductsByCategory() {
+        mainView.println("Enter category name");
+        String name = mainView.getStringInput().trim().toLowerCase();
+        try {
+            List<Product> products = service.getProductByCategory(name);
+            mainView.println("-----------------");
+            mainView.println("Products: ");
+            int i = 1;
+            for (Product product : products) {
+                mainView.print(i + ". ");
+                mainView.println(product.productToString());
+            }
+        } catch (DAOException e) {
+            mainView.println(e.getMessage());
+        }
+
     }
 
     private void showPreviousOrders() {
