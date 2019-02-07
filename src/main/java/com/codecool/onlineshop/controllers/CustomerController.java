@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.models.Product;
 import com.codecool.onlineshop.services.CustomerService;
 import com.codecool.onlineshop.services.ServiceException;
@@ -44,6 +45,7 @@ public class CustomerController {
                     break;
                 case 5:
                     // Place an order
+                    placeOrder();
                     break;
                 case 6:
                     // See previous orders
@@ -64,6 +66,14 @@ public class CustomerController {
                 default:
                     System.out.println("Wrong choice!");
             }
+        }
+    }
+
+    private void placeOrder() {
+        try {
+            service.placeAnOrder();
+        } catch (DAOException e) {
+            mainView.println("Cannot place an order");
         }
     }
 

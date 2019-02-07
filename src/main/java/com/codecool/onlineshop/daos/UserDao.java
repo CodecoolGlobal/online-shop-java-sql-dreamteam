@@ -156,19 +156,20 @@ public class UserDao implements IUserDao {
 
     
     @Override
-    public void addOrder(String userLogin, String status, Date created_at, Date paid_at) throws DAOException{
+    public void addOrder(String userLogin, String status, Date created_at) throws DAOException{
         Statement stmt = null;
         try {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
             stmt = databaseConnector.getConnection().createStatement();
-            String sql = "INSERT INTO ORDERS(USER_LOGIN, STATUS, CREATED AT, PAID_AT) "
-                        + "VALUES ('" + userLogin + "', " + status + ", " + created_at + ", " + paid_at + ");";
+            String sql = "INSERT INTO ORDERS(USER_LOGIN, STATUS, CREATED_AT) "
+                        + "VALUES ('" + userLogin + "', '" + status + "', '" + created_at.toString() + "');";
             stmt.executeUpdate(sql);
             databaseConnector.getConnection().commit();
             stmt.close();
             databaseConnector.getConnection().close();
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException("Wrong login or password");
         }
     }

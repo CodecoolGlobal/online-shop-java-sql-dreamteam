@@ -4,6 +4,8 @@ import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -13,6 +15,14 @@ public class CustomerService extends Service {
 
     public Iterator getBusketIterator() {
         return customer.getBasket().getIterator();
+    }
+
+    public String getCustomerName() {
+        return customer.getName();
+    }
+
+    public String getCustomerPassword() {
+        return customer.getName();
     }
 
     public boolean isBasketEmpty() {
@@ -79,7 +89,21 @@ public class CustomerService extends Service {
         return null;
     }
 
-    public void placeAnOrder() {
-        //...
+    public void placeAnOrder() throws DAOException {
+        userDao.addOrder(getCustomerName(), "submited", new Date());
+        Iterator<Product> basket = customer.getBasket().getIterator();
+        while (basket.hasNext()) {
+            Product basketProduct = basket.next();
+            System.out.println("before");
+            Product product = productDao.getProductById(basketProduct.getId());
+            System.out.println("after");
+            int newAmount = product.getAmount() - basketProduct.getAmount();
+            List<String> editData = Arrays.asList(basketProduct.getName(),
+                    Double.toString(basketProduct.getPrice()),
+                    Integer.toString(newAmount),
+                    Boolean.toString(basketProduct.isAvailable()));
+            editData.forEach(s -> System.out.println(s));
+            productDao.editProduct(basketProduct.getId(), editData, basketProduct.getCategory().getId());
+        }
     }
 }

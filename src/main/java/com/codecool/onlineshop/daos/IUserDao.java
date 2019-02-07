@@ -13,7 +13,7 @@ public interface IUserDao {
 
     List<Order> getOrdersByUserName(String userName) throws DAOException;
 
-    void addOrder(String userLogin, String status, Date created_at, Date paid_at) throws DAOException;
+    void addOrder(String userLogin, String status, Date created_at) throws DAOException;
 
     List<Order> getAllOrders() throws DAOException;
 
