@@ -2,8 +2,6 @@ package com.codecool.onlineshop.models;
 
 import com.codecool.onlineshop.containers.Category;
 
-import java.text.DecimalFormat;
-
 public class Product {
     private int id;
     private String name;
@@ -13,30 +11,29 @@ public class Product {
     private Category category;
 
     public Product(int id, String name, double price, int amount, boolean isAvailable, Category category) {
-        DecimalFormat decimalFormat = new DecimalFormat("#,##");
 
         this.id = id;
         this.name = name;
-        this.price = Double.valueOf(decimalFormat.format(Double.toString(price))); // rounds up to 2 digits past comma
+        this.price = price; // rounds up to 2 digits past comma
         this.amount = amount;
         this.isAvailable = isAvailable;
         this.category = category;
     }
 
-    public String prodctToString(){
-        StringBuilder string = null;
+    public String productToString(){
+        StringBuilder string = new StringBuilder();
         string.append("id: ");
         string.append(id);
         string.append(" name: ");
         string.append(name);
         string.append(" price: ");
-        string.append(price);
+        string.append(String.format("%.2f", price));
         string.append(" amount: ");
         string.append(amount);
         string.append(" isAvailable: ");
         string.append(isAvailable);
         string.append(" category: ");
-        string.append(category);
+        string.append(category.getName());
 
         return string.toString();
     }

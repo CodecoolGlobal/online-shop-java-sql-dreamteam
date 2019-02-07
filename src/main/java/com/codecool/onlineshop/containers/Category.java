@@ -13,7 +13,12 @@ public class Category {
 
     public Category(String name){
         this.name = name;
+    }
 
+    public Category(int id, String name, boolean isAvailable) {
+        this.id = id;
+        this.name = name;
+        this.isAvailable = isAvailable;
     }
 
     public int getId() {
@@ -42,7 +47,7 @@ public class Category {
         string.append(isAvailable);
         string.append("\n Products in category: ");
         for (Product product : list){
-            string.append("\n" + product.prodctToString());
+            string.append("\n" + product.productToString());
         }
 
         return string.toString();
