@@ -13,7 +13,12 @@ public class Category {
 
     public Category(String name){
         this.name = name;
+    }
 
+    public Category(int id, String name, boolean isAvailable) {
+        this.id = id;
+        this.name = name;
+        this.isAvailable = isAvailable;
     }
 
     public int getId() {
