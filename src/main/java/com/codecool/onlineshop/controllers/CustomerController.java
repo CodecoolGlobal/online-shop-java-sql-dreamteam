@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.codecool.onlineshop.daos.DAOException;
+import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
 import com.codecool.onlineshop.services.CustomerService;
 import com.codecool.onlineshop.services.ServiceException;
@@ -14,9 +15,9 @@ public class CustomerController {
     private MainView mainView;
     private CustomerService service;
 
-    public CustomerController() {
+    public CustomerController(Customer customer) {
         this.mainView = new MainView();
-        this.service = new CustomerService();
+        this.service = new CustomerService(customer);
     }
 
     public void run() {

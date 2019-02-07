@@ -63,7 +63,7 @@ public class MainController {
     private void handleCustomer() {
         Customer customer = (Customer) user;
         mainView.print("Im customer");
-        CustomerController controller = new CustomerController();
+        CustomerController controller = new CustomerController(customer);
         controller.run();
     }
 
