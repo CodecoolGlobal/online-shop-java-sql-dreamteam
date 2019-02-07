@@ -1,5 +1,6 @@
 package com.codecool.onlineshop.services;
 
+import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
 
@@ -15,8 +16,12 @@ public class CustomerService extends Service {
     }
 
     public void deleteProductFromBasket(int productId) {
-        Product product = productDao.getProductById(productId);
-        customer.getBasket().deleteProduct(product);
+        try {
+            Product product = productDao.getProductById(productId);
+            customer.getBasket().deleteProduct(product);
+        } catch (DAOException e) {
+
+        }
     }
 
     public void editNumberOf(int productId, int amount) {
@@ -30,8 +35,12 @@ public class CustomerService extends Service {
         }
     }
 
-    public List<Product> getAllProducts() {
-        return productDao.getAvailableProducts();
+    public List<Product> getAllProducts() throws ServiceException{
+        try {
+            return productDao.getAvailableProducts();
+        } catch (DAOException e ) {
+            throw new ServiceException();
+        }
     }
 
     public void placeAnOrder() {
