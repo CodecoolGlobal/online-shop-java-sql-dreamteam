@@ -51,10 +51,13 @@ public class ProductDao implements IProductDao {
         //                         + "INSERT INTO Category(name) VALUES('Diary');";
         // String insertProducts = "INSERT INTO Products(name) VALUES('Fruits')"
 
-        try(Statement statement = databaseConnector.getConnection().createStatement()) {
+        try {
+            databaseConnector.connectToDatabase();
+            Statement statement = databaseConnector.getConnection().createStatement();
             statement.executeUpdate(productQuery);
             statement.executeUpdate(categoryQuery);
             statement.executeUpdate(featuredQuery);
+            databaseConnector.c.close();
         } catch (SQLException e) {
             throw new DAOException("Cannot create tables");
         }
