@@ -35,7 +35,7 @@ public class UserDao implements IUserDao {
             ordersStmt = databaseConnector.getConnection().createStatement();
             String ordersSql = "CREATE TABLE IF NOT EXISTS ORDERS " +
                     "(ID            INTEGER         PRIMARY KEY AUTOINCREMENT," +
-                    " USER_LOGIN    TEXT            FOREIGN KEY NOT NULL, " +
+                    " USER_LOGIN    TEXT             KEY NOT NULL, " +
                     " STATUS        TEXT                NOT NULL, " +
                     " CREATED_AT    TEXT                NOT NULL, " +
                     " PAID_AT       TEXT            )";
@@ -71,20 +71,21 @@ public class UserDao implements IUserDao {
             databaseConnector.getConnection().setAutoCommit(false);
 
             stmt = databaseConnector.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT LOGIN, PASSWORD, PERMISSION FROM USERS WHERE LOGIN = " + login + "AND PASSWORD = " + password);
+            ResultSet rs = stmt.executeQuery("SELECT LOGIN, PASSWORD, PERMISSION FROM USERS WHERE LOGIN = '" + login + "' AND PASSWORD = '" + password +"'");
             String userLogin = rs.getString("LOGIN");
             String userPassword = rs.getString("PASSWORD");
             String userPermission = rs.getString("PERMISSION");
-
-            if (userPermission == "A") {
-                return new Admin(userLogin, password);
-            } else if (userPermission == "C") {
-                return new Customer(userLogin, password);
-            }
-             
             rs.close();
             stmt.close();
             databaseConnector.getConnection().close();
+            if (userPermission.equals("A")) {
+                return new Admin(userLogin, userPassword);
+            } else if (userPermission.equals("C")) {
+                return new Customer(userLogin, userPassword);
+            } else {
+                return null;
+            }
+               
         } catch (SQLException e) {
             throw new DAOException("Wrong login or password");
         }
@@ -92,7 +93,7 @@ public class UserDao implements IUserDao {
 
 
     @Override
-    public List<Order> getAllOrders() throws DAOException{
+    public List<Order> getAllOrders() throws DAOException {
         List<Order> orders = new ArrayList<Order>();
         Statement stmt = null;
         try {
@@ -115,6 +116,7 @@ public class UserDao implements IUserDao {
             rs.close();
             stmt.close();
             databaseConnector.getConnection().close();
+            return orders;
         } catch (SQLException e) {
             throw new DAOException("Wrong login or password");
         }
@@ -146,6 +148,7 @@ public class UserDao implements IUserDao {
         rs.close();
         stmt.close();
         databaseConnector.getConnection().close();
+        return orders;
         } catch (SQLException e) {
             throw new DAOException("Wrong login or password");
         }
@@ -171,7 +174,7 @@ public class UserDao implements IUserDao {
     }
 
     @Override
-    public void addCustomer(String login, String password){
+    public void addCustomer(String login, String password) throws DAOException{
         Statement stmt = null;
         try {
             databaseConnector.connectToDatabase();
