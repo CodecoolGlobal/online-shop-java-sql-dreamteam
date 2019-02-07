@@ -116,7 +116,7 @@ public class ProductDao implements IProductDao {
     }
 
     public List<String> getAllCategoryNames() throws DAOException{
-        String productsQuery = "SELECT id, name FROM Category;";
+        String productsQuery = "SELECT name FROM Category;";
         Statement statement = null;
         ResultSet results = null;
         try {
@@ -126,9 +126,8 @@ public class ProductDao implements IProductDao {
             
             List<String> categoryNames = new ArrayList<>();
             while(results.next()){
-                String id = results.getString("id");
                 String name = results.getString("name");
-                categoryNames.add((id + ". " + name));
+                categoryNames.add((name));
             }
             return categoryNames;
 

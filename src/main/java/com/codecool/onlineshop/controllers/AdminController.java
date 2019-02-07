@@ -31,7 +31,7 @@ public class AdminController {
                     addNewCategory();
                     break;
                 case 2:
-                    // Edit category name
+                    editCategoryName();
                     break;
                 case 3:
                     addNewProduct();
@@ -57,7 +57,9 @@ public class AdminController {
     }
 
     private void addNewCategory(){
-        mainView.println("Type name of new category: ");
+        mainView.println("These are available categories: \n");
+        mainView.printStringTable(adminService.getCategoryNames());
+        mainView.println("\nType name of new category: ");
         String categoryName = mainView.getStringInput();
         adminService.addNewCategory(categoryName.toLowerCase());
         mainView.getEmptyInput();
@@ -108,9 +110,16 @@ public class AdminController {
     }
 
 
-    // private void editCategoryName(){
-    //     adminService.editCategoryName(categoryName);
-    // }
+    private void editCategoryName(){
+        mainView.println("These are available categories: \n");
+        mainView.printStringTable(adminService.getCategoryNames());
+        mainView.println("\nChoose which category you want to edit(by its name): ");
+        String oldName = mainView.getStringInput();
+        mainView.println("Write new name of category: ");
+        String newName = mainView.getStringInput();
+        adminService.editCategoryName(oldName, newName);
+        mainView.getEmptyInput();
+    }
 
     private void deactivateProduct() {
         printListOfCurrentProducts();
@@ -119,6 +128,7 @@ public class AdminController {
         mainView.clearScreen();
         mainView.println("Product deactivated\n");
     }
+
 
     private void printListOfCurrentProducts() {
         try {
