@@ -104,15 +104,15 @@ public class UserDao implements IUserDao {
             databaseConnector.getConnection().setAutoCommit(false);
             stmt = databaseConnector.getConnection().createStatement();
             ResultSet rs = stmt.executeQuery("SELECT ORDERS.ID, STATUS, CREATED_AT, PAID_AT, LOGIN, PASSWORD FROM ORDERS  LEFT JOIN USERS ON ORDERS.USER_LOGIN = USERS.LOGIN");
-            
+
             while (rs.next()){
                 Integer id = rs.getInt("ID");
                 String login = rs.getString("login");
                 String password = rs.getString("password");
-                Date created_at = formatter.parse(rs.getString("created_at"));
+                Date created_at = new Date(Long.valueOf(rs.getString("created_at")));
                 Date paid_at = null;
-                if(rs.getString("paid_at") != null){
-                    paid_at = formatter.parse(rs.getString("paid_at"));
+                if (rs.getString("paid_at") != null) {
+                    paid_at = new Date(Long.valueOf(rs.getString("paid_at")));
                 }
                 String status = rs.getString("status");
                 User user = new User(login, password);
@@ -139,14 +139,18 @@ public class UserDao implements IUserDao {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
             stmt = databaseConnector.getConnection().createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT ORDERS.ID, STATUS, CREATED_AT, PAID_AT, LOGIN, PASSWORD FROM ORDERS  LEFT JOIN USERS ON ORDERS.USER_LOGIN = USERS.LOGIN WHERE LOGIN = " + userName);
 
+            ResultSet rs = stmt.executeQuery("SELECT ORDERS.ID, STATUS, CREATED_AT, PAID_AT, USER_LOGIN, PASSWORD FROM ORDERS  LEFT JOIN USERS ON ORDERS.USER_LOGIN = USERS.LOGIN WHERE LOGIN = '" + userName + "'");
         while (rs.next()){
             Integer id = rs.getInt("ID");
             String login = rs.getString("user_login");
             String password = rs.getString("password");
-            Date created_at = formatter.parse(rs.getString("created_at"));
-            Date paid_at = formatter.parse(rs.getString("paid_at"));
+
+            Date created_at = new Date(Long.valueOf(rs.getString("created_at")));
+            Date paid_at = null;
+            if (rs.getString("paid_at") != null) {
+                paid_at = new Date(Long.valueOf(rs.getString("paid_at")));
+            }
             String status = rs.getString("status");
             System.out.println("lol");
             User user = new User(login, password);
@@ -156,9 +160,10 @@ public class UserDao implements IUserDao {
         stmt.close();
         databaseConnector.getConnection().close();
         return orders;
-        } catch (SQLException  | ParseException e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
             throw new DAOException("Wrong login or password");
-        }
+        } 
     }
 
     
@@ -172,7 +177,7 @@ public class UserDao implements IUserDao {
             databaseConnector.getConnection().setAutoCommit(false);
             stmt = databaseConnector.getConnection().createStatement();
             String sql = "INSERT INTO ORDERS(USER_LOGIN, STATUS, CREATED_AT) "
-                        + "VALUES ('" + userLogin + "', '" + status + "', '" + strDate + "');";
+                        + "VALUES ('" + userLogin + "', '" + status + "', '" + Long.toString(created_at.getTime()) + "');";
             stmt.executeUpdate(sql);
             databaseConnector.getConnection().commit();
             stmt.close();

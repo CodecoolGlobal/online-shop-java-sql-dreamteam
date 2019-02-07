@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
@@ -50,15 +51,19 @@ public class CustomerController {
                     break;
                 case 6:
                     // See previous orders
+                    showPreviousOrders();
                     break;
                 case 7:
                     // List available products
+                    printAvailableProducts();
                     break;
                 case 8:
                     // List category-based products
+                    listProductsByCategory();
                     break;
                 case 9:
                     // Check product availability
+                    checkIfProductExists();
                     break;
                 case 0:
                     choice = 0;
@@ -67,6 +72,53 @@ public class CustomerController {
                 default:
                     System.out.println("Wrong choice!");
             }
+        }
+    }
+
+    private void checkIfProductExists() {
+        mainView.println("Find product availability\nEnter product name:");
+        String name = mainView.getStringInput().trim().toLowerCase();
+        try {
+            Product product = service.getProductByName(name);
+            mainView.println("-----------------");
+            mainView.println("Product found: ");
+            mainView.println(product.productToString());
+        } catch (DAOException e) {
+            mainView.println(e.getMessage());
+        } catch (ServiceException e) {
+            mainView.println(e.getMessage());
+        }
+    }
+
+    private void listProductsByCategory() {
+        mainView.println("Enter category name");
+        String name = mainView.getStringInput().trim().toLowerCase();
+        try {
+            List<Product> products = service.getProductByCategory(name);
+            mainView.println("-----------------");
+            mainView.println("Products: ");
+            int i = 1;
+            for (Product product : products) {
+                mainView.print(i + ". ");
+                mainView.println(product.productToString());
+            }
+        } catch (DAOException e) {
+            mainView.println(e.getMessage());
+        }
+
+    }
+
+    private void showPreviousOrders() {
+        try {
+            List<Order> orders = service.getCustomerOrders();
+            mainView.println("------------------");
+            mainView.println("Your orders:");
+            for (int i = 0; i < orders.size(); i++){
+                mainView.print(i + ". ");
+                mainView.println(orders.get(i).toString());
+            }
+        } catch (DAOException e) {
+            mainView.println("Cannot get orders");
         }
     }
 

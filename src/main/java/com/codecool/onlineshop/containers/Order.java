@@ -2,6 +2,8 @@ package com.codecool.onlineshop.containers;
 
 import com.codecool.onlineshop.models.User;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Order {
@@ -28,6 +30,25 @@ public class Order {
 
     private void setOrderPayAt(Date orderPayAt){
         this.orderPayAt = orderPayAt;
+    }
+
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Order id: ");
+        sb.append(id);
+        sb.append(", status: ");
+        sb.append(status);
+        sb.append(", user: ");
+        sb.append(user.getName());
+        sb.append(", created at: ");
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        sb.append(df.format(orderCreatedAt));
+        if (orderPayAt != null) {
+            sb.append(", paid At: ");
+            sb.append(df.format(orderPayAt));
+        }
+        return sb.toString();
     }
 
     public int getId(){

@@ -1,5 +1,6 @@
 package com.codecool.onlineshop.services;
 
+import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
@@ -9,12 +10,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class CustomerService extends Service {
     private Customer customer;
 
     public CustomerService(Customer customer) {
-        customer = customer;
+        this.customer = customer;
     }
 
     public Iterator getBusketIterator() {
@@ -109,5 +111,28 @@ public class CustomerService extends Service {
             editData.forEach(s -> System.out.println(s));
             productDao.editProduct(basketProduct.getId(), editData, basketProduct.getCategory().getId());
         }
+    }
+
+    public List<Order> getCustomerOrders() throws DAOException{
+        List<Order> orders = userDao.getOrdersByUserName(customer.getName());
+        return orders;
+    }
+
+    public List<Product> getProductByCategory(String categoryName) throws DAOException {
+        List<Product> products = productDao.getAvailableProducts();
+        int categoryId = productDao.getCategoryIdByName(categoryName);
+        products = products.stream().filter(p -> p.getCategory().getId() == categoryId).collect(Collectors.toList());
+        return products;
+    }
+
+    public Product getProductByName(String productName) throws DAOException, ServiceException{
+        List<Product> products = productDao.getAvailableProducts();
+        for (Product product : products) {
+            if(product.getName().equals(productName)){
+                return product;
+            }
+        }
+        throw new ServiceException("Product does not exists.");
+
     }
 }

@@ -62,11 +62,10 @@ public class ProductDao implements IProductDao {
             throw new DAOException("Cannot create tables");
         }
     }
-
+    
     public boolean checkIfAvailable(String productName) throws DAOException {
-        return true;
+        return false;
     }
-
 
     public boolean checkIfAvailableProduct(String productName) throws DAOException{
         productName.toLowerCase();
