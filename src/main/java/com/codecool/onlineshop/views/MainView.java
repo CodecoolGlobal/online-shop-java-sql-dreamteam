@@ -107,7 +107,7 @@ public class MainView {
 
     public void printListOfProducts(List<Product> listOfProducts) {
         for (Product p : listOfProducts) {
-            System.out.println(p.toString());
+            System.out.println(p.productToString());
         }
     }
 
