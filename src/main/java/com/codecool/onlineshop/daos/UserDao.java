@@ -98,7 +98,6 @@ public class UserDao implements IUserDao {
     public List<Order> getAllOrders() throws DAOException {
         List<Order> orders = new ArrayList<Order>();
         Statement stmt = null;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss"); 
         try {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
@@ -123,7 +122,7 @@ public class UserDao implements IUserDao {
             stmt.close();
             databaseConnector.getConnection().close();
             return orders;
-        } catch (SQLException  | ParseException e) {
+        } catch (SQLException e) {
             throw new DAOException("Something went wrong.");
         }
     }
@@ -134,7 +133,6 @@ public class UserDao implements IUserDao {
     public List<Order> getOrdersByUserName(String userName) throws DAOException{
         Statement stmt = null;
         List<Order> orders = new ArrayList<Order>();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss"); 
         try {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
@@ -145,7 +143,6 @@ public class UserDao implements IUserDao {
             Integer id = rs.getInt("ID");
             String login = rs.getString("user_login");
             String password = rs.getString("password");
-
             Date created_at = new Date(Long.valueOf(rs.getString("created_at")));
             Date paid_at = null;
             if (rs.getString("paid_at") != null) {
