@@ -23,6 +23,10 @@ public class CustomerService extends Service {
         return customer.getBasket().getBasketSize();
     }
 
+    public void removeProductFromBasket(Product product) {
+        customer.getBasket().deleteProduct(product);
+    }
+
     public Product getProductFromBasket(int productNumber) {
         if (productNumber < 0 || productNumber >= getBasketSize()) {
             return null;

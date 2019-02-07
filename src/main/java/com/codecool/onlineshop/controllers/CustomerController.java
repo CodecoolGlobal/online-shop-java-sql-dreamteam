@@ -40,6 +40,7 @@ public class CustomerController {
                     break;
                 case 4:
                     // Remove a product
+                    deleteProductFromBasket();
                     break;
                 case 5:
                     // Place an order
@@ -66,11 +67,27 @@ public class CustomerController {
         }
     }
 
+    private void deleteProductFromBasket() {
+        printBasket();
+
+        mainView.println("Enter basket product number: ");
+        int number = mainView.getIntegerInput() - 1;
+        Product product = service.getProductFromBasket(number);
+        if (product == null) {
+            mainView.println("Wrong product number.");
+            mainView.getEmptyInput();
+            return;
+        }
+
+        service.deleteProductFromBasket(product);
+        mainView.println("Product Deleted successfuly.");
+        mainView.getEmptyInput();
+    }
+
     private void editProductQuantity() {
-        mainView.println("All product:");
+        
         printAvailableProducts();
-        mainView.println("------------------");
-        mainView.println("Basket products:");
+        
         printBasket();
         if (service.isBasketEmpty()) {
             mainView.println("There is no products in basket");
@@ -142,6 +159,8 @@ public class CustomerController {
     }
 
     private void printAvailableProducts(){
+        mainView.println("------------------");
+        mainView.println("All product:");
         List<Product> availableProducts = null;
         try {
             availableProducts = service.getAllProducts();
@@ -159,6 +178,8 @@ public class CustomerController {
     }
 
     private void printBasket() {
+        mainView.println("------------------");
+        mainView.println("Basket products:");
         Iterator busket = service.getBusketIterator();
         int i = 1;
         while(busket.hasNext()) {
