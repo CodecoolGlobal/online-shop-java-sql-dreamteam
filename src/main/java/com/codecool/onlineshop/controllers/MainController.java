@@ -8,6 +8,7 @@ import com.codecool.onlineshop.models.Admin;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.views.MainView;
+import com.codecool.onlineshop.services.*;
 
 public class MainController {
     private MainView mainView;
@@ -55,6 +56,8 @@ public class MainController {
     private void handleAdmin() {
         Admin admin = (Admin) user;
         mainView.print("Im admin");
+        AdminController adminController = new AdminController(user);
+        adminController.run();
 
     }
 

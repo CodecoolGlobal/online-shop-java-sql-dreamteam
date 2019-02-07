@@ -1,12 +1,20 @@
 package com.codecool.onlineshop.controllers;
 
 import com.codecool.onlineshop.views.MainView;
+import com.codecool.onlineshop.models.User;
+import com.codecool.onlineshop.services.AdminService;
+import java.util.Scanner;
 
 public class AdminController {
     private MainView mainView;
+    User admin;
+    AdminService adminService;
+    Scanner input = new Scanner(System.in);
 
-    public AdminController(){
+    public AdminController(User admin){
         this.mainView = new MainView();
+        this.admin = admin;
+        this.adminService = new AdminService(admin);
     }
 
     public void run() {
@@ -17,7 +25,9 @@ public class AdminController {
             choice = mainView.getIntegerInput();
             switch (choice) {
                 case 1:
-                    // Create new category
+                    mainView.println("Type name of new category: ");
+                    String categoryName = input.nextLine();
+                    adminService.addNewCategory(categoryName.toLowerCase());
                     break;
                 case 2:
                     // Edit category name
