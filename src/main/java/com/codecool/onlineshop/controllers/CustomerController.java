@@ -24,13 +24,12 @@ public class CustomerController {
             switch (choice) {
                 case 1:
                     // Show basket
-                    Iterator busket = service.getBusketIterator();
-                    while(busket.hasNext()) {
-                        mainView.println(((Product) busket.next()).productToString());
-                    }
+                    printBasket();
                     break;
                 case 2:
-                    // Add product to basket
+                    //Add to busket
+                    printAvailableProducts();
+                    mainView.print("Enter product number");
                     break;
                 case 3:
                     // Edit product quantity
@@ -60,6 +59,15 @@ public class CustomerController {
                 default:
                     System.out.println("Wrong choice!");
             }
+        }
+    }
+
+    private void printBasket() {
+        Iterator busket = service.getBusketIterator();
+        int i = 1;
+        while(busket.hasNext()) {
+            mainView.print(i + ". ");
+            mainView.println(((Product) busket.next()).productToString());
         }
     }
 }
