@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
@@ -50,9 +51,11 @@ public class CustomerController {
                     break;
                 case 6:
                     // See previous orders
+                    showPreviousOrders();
                     break;
                 case 7:
                     // List available products
+                    printAvailableProducts();
                     break;
                 case 8:
                     // List category-based products
@@ -67,6 +70,20 @@ public class CustomerController {
                 default:
                     System.out.println("Wrong choice!");
             }
+        }
+    }
+
+    private void showPreviousOrders() {
+        try {
+            List<Order> orders = service.getCustomerOrders();
+            mainView.println("------------------");
+            mainView.println("Your orders:");
+            for (int i = 0; i < orders.size(); i++){
+                mainView.print(i + ". ");
+                mainView.println(orders.get(i).toString());
+            }
+        } catch (DAOException e) {
+            mainView.println("Cannot get orders");
         }
     }
 

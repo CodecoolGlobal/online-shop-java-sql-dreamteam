@@ -1,5 +1,6 @@
 package com.codecool.onlineshop.services;
 
+import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
@@ -14,7 +15,7 @@ public class CustomerService extends Service {
     private Customer customer;
 
     public CustomerService(Customer customer) {
-        customer = customer;
+        this.customer = customer;
     }
 
     public Iterator getBusketIterator() {
@@ -109,5 +110,10 @@ public class CustomerService extends Service {
             editData.forEach(s -> System.out.println(s));
             productDao.editProduct(basketProduct.getId(), editData, basketProduct.getCategory().getId());
         }
+    }
+
+    public List<Order> getCustomerOrders() throws DAOException{
+        List<Order> orders = userDao.getOrdersByUserName(customer.getName());
+        return orders;
     }
 }
