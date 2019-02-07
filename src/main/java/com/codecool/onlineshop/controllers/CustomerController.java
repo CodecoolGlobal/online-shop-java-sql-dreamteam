@@ -66,6 +66,38 @@ public class CustomerController {
         }
     }
 
+    private void editProductQuantity() {
+        mainView.println("All product:");
+        printAvailableProducts();
+        mainView.println("------------------");
+        mainView.println("Basket products:");
+        printBasket();
+        if (service.isBasketEmpty()) {
+            mainView.println("There is no products in basket");
+            return;
+        }
+
+        mainView.println("Enter basket product number: ");
+        int number = mainView.getIntegerInput() - 1;
+        Product product = service.getProductFromBasket(number);
+        if (product == null) {
+            mainView.println("Wrong product number.");
+            mainView.getEmptyInput();
+            return;
+        }
+        mainView.println("Enter amount: ");
+        int amount = mainView.getIntegerInput();
+        if (amount < 1 || amount > service.getProductById(product.getId()).getAmount()) {
+            mainView.println("Wrong amount.");
+            mainView.getEmptyInput();
+            return;
+        } else {
+            product.setAmount(amount);
+            mainView.println("Product Edited successfuly.");
+            mainView.getEmptyInput();
+        }      
+    }
+
     private void addProductToBasket() {
         List<Product> availableProducts = null;
         try {
@@ -104,13 +136,26 @@ public class CustomerController {
             return;
         } else {
             service.addProduct(product, amount);
-            mainView.print("Product added successfuly.");
+            mainView.println("Product added successfuly.");
             mainView.getEmptyInput();
         }      
     }
 
     private void printAvailableProducts(){
+        List<Product> availableProducts = null;
+        try {
+            availableProducts = service.getAllProducts();
+        } catch (ServiceException e) {
+            mainView.println("Cannot print available products");
+        }
 
+        Iterator<Product> products = availableProducts.iterator();
+        int i = 1;
+        while(products.hasNext()) {
+            mainView.print(i + ". ");
+            mainView.println(products.next().productToString());
+            i++;
+        }
     }
 
     private void printBasket() {

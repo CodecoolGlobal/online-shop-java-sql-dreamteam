@@ -9,8 +9,6 @@ public class Basket {
     private int id;
     private List<Product> list = new ArrayList<>();;
 
-
-
     public Basket(){
         
     }
@@ -29,6 +27,10 @@ public class Basket {
 
     public void deleteProduct(Product product){
         list.remove(product);
+    }
+
+    public int getBasketSize() {
+        return list.size();
     }
 
 
