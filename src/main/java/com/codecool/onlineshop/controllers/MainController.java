@@ -58,12 +58,13 @@ public class MainController {
         mainView.print("Im admin");
         AdminController adminController = new AdminController(user);
         adminController.run();
-
     }
 
     private void handleCustomer() {
         Customer customer = (Customer) user;
         mainView.print("Im customer");
+        CustomerController controller = new CustomerController();
+        controller.run();
     }
 
     private User login() {
