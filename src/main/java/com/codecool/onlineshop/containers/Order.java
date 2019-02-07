@@ -30,5 +30,29 @@ public class Order {
         this.orderPayAt = orderPayAt;
     }
 
+    public int getId(){
+        return id;
+    }
+
+    public User getUser(){
+        return user;
+    }
+
+    public Date getOrderCreatedAt(){
+        return orderCreatedAt;
+    }
+
+    public boolean getPaid(){
+        return paid;
+    }
+
+    public Date getOrderPayAt(){
+        return orderPayAt;
+    }
+
+    public String getStatus(){
+        return status;
+    }
+
 
 }

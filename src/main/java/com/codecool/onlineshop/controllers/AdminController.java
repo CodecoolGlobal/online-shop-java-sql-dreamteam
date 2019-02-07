@@ -4,6 +4,7 @@ import com.codecool.onlineshop.services.ServiceException;
 import com.codecool.onlineshop.views.MainView;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.services.AdminService;
+import com.codecool.onlineshop.containers.*;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class AdminController {
                     deactivateProduct();
                     break;
                 case 6:
-                    // Make a discount
+                    getAllOrders();
                     break;
                 case 0:
                     choice = 0;
@@ -136,6 +137,11 @@ public class AdminController {
         } catch (ServiceException e) {
             e.printStackTrace();
         }
+    }
+
+    private void getAllOrders(){
+        List<Order> orders = adminService.getAllOrders();
+        mainView.printAllOrders(orders);
     }
 
 

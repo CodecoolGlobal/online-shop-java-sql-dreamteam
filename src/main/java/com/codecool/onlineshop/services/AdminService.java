@@ -108,6 +108,17 @@ public class AdminService extends Service {
         }
     }
 
+    public List<Order> getAllOrders(){
+        List<Order> orders = new ArrayList<>();
+        try {
+            orders = userDao.getAllOrders();
+        } 
+        catch (DAOException e) {
+            System.out.println("Something went wrong. ");
+        }
+        return orders;
+    }
+
 
 }
 
