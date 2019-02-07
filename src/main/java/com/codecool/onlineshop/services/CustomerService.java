@@ -10,18 +10,17 @@ import java.util.List;
 public class CustomerService extends Service {
     private Customer customer = new Customer("login", "password");
 
+    public Iterator getBusketIterator() {
+        return customer.getBasket().getIterator();
+    }
+
     public void addProduct(Product product, int amount) {
         Product productToAdd = new Product(product.getId(), product.getName(), product.getPrice(), amount, product.isAvailable(), product.getCategory());
         customer.getBasket().addProduct(productToAdd);
     }
 
-    public void deleteProductFromBasket(int productId) {
-        try {
-            Product product = productDao.getProductById(productId);
-            customer.getBasket().deleteProduct(product);
-        } catch (DAOException e) {
-
-        }
+    public void deleteProductFromBasket(Product basketPproduct) {
+            customer.getBasket().deleteProduct(basketPproduct);
     }
 
     public void editNumberOf(int productId, int amount) {

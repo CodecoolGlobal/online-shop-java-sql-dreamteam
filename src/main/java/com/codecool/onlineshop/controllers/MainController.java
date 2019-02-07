@@ -55,12 +55,14 @@ public class MainController {
     private void handleAdmin() {
         Admin admin = (Admin) user;
         mainView.print("Im admin");
-
+        AdminController controller = new AdminController();
+        controller.run();
     }
 
     private void handleCustomer() {
         Customer customer = (Customer) user;
         mainView.print("Im customer");
+        CustomerController controller = new CustomerController();
     }
 
     private User login() {

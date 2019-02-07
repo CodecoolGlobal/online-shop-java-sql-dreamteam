@@ -1,12 +1,18 @@
 package com.codecool.onlineshop.controllers;
 
+import java.util.Iterator;
+
+import com.codecool.onlineshop.models.Product;
+import com.codecool.onlineshop.services.CustomerService;
 import com.codecool.onlineshop.views.MainView;
 
 public class CustomerController {
     private MainView mainView;
+    private CustomerService service;
 
     public CustomerController() {
         this.mainView = new MainView();
+        this.service = new CustomerService();
     }
 
     public void run() {
@@ -18,6 +24,10 @@ public class CustomerController {
             switch (choice) {
                 case 1:
                     // Show basket
+                    Iterator busket = service.getBusketIterator();
+                    while(busket.hasNext()) {
+                        mainView.println(((Product) busket.next()).productToString());
+                    }
                     break;
                 case 2:
                     // Add product to basket
