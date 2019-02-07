@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class CustomerService extends Service {
-    private Customer customer = new Customer("login", "password");
+    private Customer customer;
+
+    public CustomerService(Customer customer) {
+        customer = customer;
+    }
 
     public Iterator getBusketIterator() {
         return customer.getBasket().getIterator();
