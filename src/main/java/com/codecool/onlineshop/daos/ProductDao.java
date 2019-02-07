@@ -65,6 +65,19 @@ public class ProductDao implements IProductDao {
     public boolean checkIfAvailable(String productName) throws DAOException {
         return true;
     }
+
+
+    public boolean checkIfAvailableProduct(String productName) throws DAOException{
+        productName.toLowerCase();
+        List<Product> products = getAllProducts();
+        for (Product product : products) {
+            if(product.getName().equals(productName)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     
     public List<Product> getAllProducts() throws DAOException{
         String productsQuery = "SELECT * FROM Products;";
@@ -100,6 +113,43 @@ public class ProductDao implements IProductDao {
             }
         }
     }
+
+    public List<String> getAllCategoryNames() throws DAOException{
+        String productsQuery = "SELECT id, name FROM Category;";
+        Statement statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.createStatement();
+            results = statement.executeQuery(productsQuery);
+            
+            List<String> categoryNames = new ArrayList<>();
+            while(results.next()){
+                String id = results.getString("id");
+                String name = results.getString("name");
+                categoryNames.add((id + ". " + name));
+            }
+            return categoryNames;
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
 
     public List<Product> getAvailableProducts() throws DAOException {
         List<Product> products = getAllProducts();

@@ -1,6 +1,7 @@
 package com.codecool.onlineshop.views;
 
 import java.util.Scanner;
+import java.util.List;
 
 public class MainView {
     protected Scanner scanner = new Scanner(System.in);
@@ -41,6 +42,27 @@ public class MainView {
         return number;
     }
 
+    public boolean getBooleanInput() {
+        while (!scanner.hasNextBoolean()) {
+            println("Wrong input. true or false required.");
+            scanner.nextLine();
+        }
+        boolean availability = scanner.nextBoolean();
+        scanner.nextLine();
+        return availability;
+    }
+
+
+    public float getFloatInput() {
+        while (!scanner.hasNextFloat()) {
+            println("Wrong input. Float required.");
+            scanner.nextLine();
+        }
+        float number = scanner.nextFloat();
+        scanner.nextLine();
+        return number;
+    }
+
     public void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -62,4 +84,25 @@ public class MainView {
         String string = scanner.nextLine();
         return string;
     }
+
+
+    public void printStringTable (List<String> list){
+        for (String item : list) {
+           System.out.println(item);
+        }
+    }
+
+
+    public int getIntegerInputInParition(int range) {
+        while (!scanner.hasNextInt()) {
+            println("Wrong input. Integer required.");
+            scanner.nextLine();
+        }
+        int number = scanner.nextInt();
+        scanner.nextLine();
+        return number;
+    }
+
+
+
 }

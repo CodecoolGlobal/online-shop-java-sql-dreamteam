@@ -3,13 +3,15 @@ package com.codecool.onlineshop.controllers;
 import com.codecool.onlineshop.views.MainView;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.services.AdminService;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AdminController {
     private MainView mainView;
     User admin;
     AdminService adminService;
-    Scanner input = new Scanner(System.in);
+
 
     public AdminController(User admin){
         this.mainView = new MainView();
@@ -26,15 +28,44 @@ public class AdminController {
             switch (choice) {
                 case 1:
                     mainView.println("Type name of new category: ");
-                    String categoryName = input.nextLine();
+                    String categoryName = mainView.getStringInput();
                     adminService.addNewCategory(categoryName.toLowerCase());
                     break;
                 case 2:
                     // Edit category name
                     break;
                 case 3:
-                    // Add new product
+                    List<String> attributesOfProduct = new ArrayList<>();
+                    mainView.println("Type name of new product: ");
+                    String productName = mainView.getStringInput();
+                    Boolean isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
+
+                    while (isProductNameAvailable == false) {
+                        mainView.println("There is already that product in database! Try another one: ");
+                        productName = mainView.getStringInput();
+                        isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
+                    }
+                    attributesOfProduct.add(productName);
+
+                    mainView.println("Type amount of product: ");
+                    Float amount = mainView.getFloatInput();
+                    attributesOfProduct.add(amount.toString());
+
+                    mainView.println("Type price of product: ");
+                    Integer price = mainView.getIntegerInput();
+                    attributesOfProduct.add(price.toString());
+
+                    mainView.println("Type availability of product: ");
+                    Boolean availability = mainView.getBooleanInput();
+                    attributesOfProduct.add(availability.toString());
+
+                    mainView.println("Pick category which you want add product to: ");
+                    mainView.printStringTable(adminService.getCategoryNames());
+                    int categoryId = mainView.getIntegerInput();
+                    System.out.println(attributesOfProduct.toString());
+                    adminService.addNewProduct(attributesOfProduct, categoryId);
                     break;
+
                 case 4:
                     // Edit product
                     break;
@@ -53,5 +84,10 @@ public class AdminController {
             }
         }
     }
+
+
+
+
+
 
 }
