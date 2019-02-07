@@ -60,12 +60,27 @@ public class AdminController {
         mainView.println("Type name of new category: ");
         String categoryName = mainView.getStringInput();
         adminService.addNewCategory(categoryName.toLowerCase());
+        mainView.getEmptyInput();
     }
 
     private void addNewProduct(){
         List<String> attributesOfProduct = new ArrayList<>();
+
+        if(adminService.getCategoryNames().size() == 0){
+            mainView.println("There are no categories created yet! You need to create one.");
+            addNewCategory();
+        }
+        mainView.printStringTable(adminService.getCategoryNames());
+        mainView.println("\nPick category which you want add product to: ");
+        int categoryId = mainView.getIntegerInput();
+
+        while(categoryId < 1 || categoryId > adminService.getCategoryNames().size()){
+            mainView.println("Wrong input. Try again.");
+            categoryId = mainView.getIntegerInput();
+        }
+        
         mainView.println("Type name of new product: ");
-        String productName = mainView.getStringInput();
+        String productName = mainView.getStringInput().toLowerCase();
         Boolean isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
 
         while (isProductNameAvailable == false) {
@@ -75,23 +90,21 @@ public class AdminController {
         }
         attributesOfProduct.add(productName);
 
-        mainView.println("Type amount of product: ");
-        Float amount = mainView.getFloatInput();
-        attributesOfProduct.add(amount.toString());
-
         mainView.println("Type price of product: ");
-        Integer price = mainView.getIntegerInput();
+        Float price = mainView.getFloatInput();
         attributesOfProduct.add(price.toString());
+
+        mainView.println("Type amount of product: ");
+        Integer amount = mainView.getIntegerInput();
+        attributesOfProduct.add(amount.toString());
 
         mainView.println("Type availability of product: ");
         Boolean availability = mainView.getBooleanInput();
         attributesOfProduct.add(availability.toString());
 
-        mainView.println("Pick category which you want add product to: ");
-        mainView.printStringTable(adminService.getCategoryNames());
-        int categoryId = mainView.getIntegerInput();
-        System.out.println(attributesOfProduct.toString());
         adminService.addNewProduct(attributesOfProduct, categoryId);
+        mainView.println("Product has been added! ");
+        mainView.getEmptyInput();
     }
 
 

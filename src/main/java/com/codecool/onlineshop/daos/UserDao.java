@@ -58,7 +58,6 @@ public class UserDao implements IUserDao {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Table created successfully");
     }
 
 
@@ -86,7 +85,7 @@ public class UserDao implements IUserDao {
             }
                
         } catch (SQLException e) {
-            throw new DAOException("Wrong login or password");
+            throw new DAOException("Wrong login or password. ");
         }
     }
 

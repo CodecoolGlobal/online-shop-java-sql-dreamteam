@@ -29,7 +29,7 @@ public class MainController {
                     // Log in
                     user = login();
                     if (user == null) {
-                        mainView.print("Your login or password is wrong. Try again");
+                        // mainView.print("Your login or password is wrong. Try again");
                         mainView.getEmptyInput();
                     } else {
                         if (user instanceof Admin) {
