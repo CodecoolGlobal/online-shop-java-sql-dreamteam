@@ -100,17 +100,15 @@ public class CustomerService extends Service {
         Iterator<Product> basket = customer.getBasket().getIterator();
         while (basket.hasNext()) {
             Product basketProduct = basket.next();
-            System.out.println("before");
             Product product = productDao.getProductById(basketProduct.getId());
-            System.out.println("after");
             int newAmount = product.getAmount() - basketProduct.getAmount();
             List<String> editData = Arrays.asList(basketProduct.getName(),
                     Double.toString(basketProduct.getPrice()),
                     Integer.toString(newAmount),
                     Boolean.toString(basketProduct.isAvailable()));
-            editData.forEach(s -> System.out.println(s));
             productDao.editProduct(basketProduct.getId(), editData, basketProduct.getCategory().getId());
         }
+        customer.getBasket().deleteAllProducts();
     }
 
     public List<Order> getCustomerOrders() throws DAOException{
