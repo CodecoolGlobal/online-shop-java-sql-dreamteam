@@ -1,5 +1,7 @@
 package com.codecool.onlineshop.controllers;
 
+import com.codecool.onlineshop.daos.ProductDao;
+import com.codecool.onlineshop.daos.UserDao;
 import com.codecool.onlineshop.services.ServiceException;
 import com.codecool.onlineshop.views.MainView;
 import com.codecool.onlineshop.models.User;
@@ -18,7 +20,9 @@ public class AdminController {
     public AdminController(User admin) {
         this.mainView = new MainView();
         this.admin = admin;
-        this.adminService = new AdminService(admin);
+        ProductDao productDao = new ProductDao();
+        UserDao userDao = new UserDao();
+        this.adminService = new AdminService(admin, productDao, userDao);
     }
 
     public void run() {

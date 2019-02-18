@@ -10,12 +10,16 @@ import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.daos.*;
 import com.codecool.onlineshop.services.*;
 
-public class AdminService extends Service {
+public class AdminService {
     User admin;
+    private ProductDao productDao;
+    private UserDao userDao;
 
 
-    public AdminService(User admin) {
+    public AdminService(User admin, ProductDao productDao, UserDao userDao) {
         this.admin = admin;
+        this.userDao = userDao;
+        this.productDao = productDao;
     }
 
 

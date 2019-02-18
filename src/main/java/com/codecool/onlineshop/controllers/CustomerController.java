@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.daos.DAOException;
+import com.codecool.onlineshop.daos.ProductDao;
+import com.codecool.onlineshop.daos.UserDao;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
 import com.codecool.onlineshop.services.CustomerService;
@@ -17,8 +19,10 @@ public class CustomerController {
     private CustomerService service;
 
     public CustomerController(Customer customer) {
+        ProductDao productDao = new ProductDao();
+        UserDao userDao = new UserDao();
         this.mainView = new MainView();
-        this.service = new CustomerService(customer);
+        this.service = new CustomerService(customer, productDao, userDao );
     }
 
     public void run() {

@@ -2,6 +2,8 @@ package com.codecool.onlineshop.services;
 
 import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.daos.DAOException;
+import com.codecool.onlineshop.daos.ProductDao;
+import com.codecool.onlineshop.daos.UserDao;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
 
@@ -12,11 +14,15 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class CustomerService extends Service {
+public class CustomerService  {
     private Customer customer;
+    private ProductDao productDao;
+    private UserDao userDao;
 
-    public CustomerService(Customer customer) {
+    public CustomerService(Customer customer, ProductDao productDao, UserDao userDao) {
         this.customer = customer;
+        this.productDao = productDao;
+        this.userDao = userDao;
     }
 
     public Iterator getBusketIterator() {
