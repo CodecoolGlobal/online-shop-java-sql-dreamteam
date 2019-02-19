@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class CustomerService  {
@@ -24,6 +23,8 @@ public class CustomerService  {
         this.productDao = productDao;
         this.userDao = userDao;
     }
+
+    public Customer getCustomer(){ return this.customer;}
 
     public Iterator getBusketIterator() {
         return customer.getBasket().getIterator();
@@ -101,8 +102,11 @@ public class CustomerService  {
         return null;
     }
 
-    public void placeAnOrder() throws DAOException {
-        userDao.addOrder(getCustomerName(), "submited", new Date());
+    public void placeAnOrder() throws DAOException, ServiceException {
+        if(customer.getBasket().getProducts().isEmpty()){
+            throw new ServiceException("You cant place an empty order!");
+        }
+        userDao.addOrder(getCustomerName(), "submited", new Date(), getCustomer().getBasket());
         Iterator<Product> basket = customer.getBasket().getIterator();
         while (basket.hasNext()) {
             Product basketProduct = basket.next();

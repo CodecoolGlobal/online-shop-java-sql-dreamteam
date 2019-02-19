@@ -37,6 +37,10 @@ public class Basket {
         list.removeAll(list);
     }
 
+    public List<Product> getProducts(){
+        return list;
+    }
+
 
 
 

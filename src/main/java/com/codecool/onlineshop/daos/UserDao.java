@@ -1,19 +1,20 @@
 package com.codecool.onlineshop.daos;
 
-import java.sql.Statement;
-
-import com.codecool.onlineshop.models.User;
+import com.codecool.onlineshop.containers.Basket;
+import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.models.Admin;
 import com.codecool.onlineshop.models.Customer;
-import java.util.List;
-import com.codecool.onlineshop.containers.*;
+import com.codecool.onlineshop.models.Product;
+import com.codecool.onlineshop.models.User;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
-import java.text.ParseException;
+import java.util.List;
 
 
 public class UserDao implements IUserDao {
@@ -34,6 +35,7 @@ public class UserDao implements IUserDao {
     public void createTables(){
         Statement ordersStmt = null;
         Statement usersStmt = null;
+        Statement productsStmt = null;
         try {
             databaseConnector.connectToDatabase();
             ordersStmt = databaseConnector.getConnection().createStatement();
@@ -56,6 +58,18 @@ public class UserDao implements IUserDao {
                   
             usersStmt.executeUpdate(usersSql);
             usersStmt.close();
+
+
+            productsStmt = databaseConnector.getConnection().createStatement();
+            String productsSql = "CREATE TABLE IF NOT EXISTS ORDERED_PRODUCTS " +
+                    "(ID            INTEGER         PRIMARY KEY AUTOINCREMENT," +
+                    " NAME_OF_PRODUCT         TEXT         NOT NULL, " +
+                    " PRICE      REAL            NOT NULL, " +
+                    " AMOUNT      INTEGER            NOT NULL, " +
+                    " ORDER_ID     INTEGER            NOT NULL)";
+
+            productsStmt.executeUpdate(productsSql);
+            productsStmt.close();
             databaseConnector.getConnection().close();
 
         } catch (SQLException e) {
@@ -149,7 +163,6 @@ public class UserDao implements IUserDao {
                 paid_at = new Date(Long.valueOf(rs.getString("paid_at")));
             }
             String status = rs.getString("status");
-            System.out.println("lol");
             User user = new User(login, password);
             orders.add(new Order(id, null, user, created_at, paid_at, status));
             }
@@ -165,7 +178,7 @@ public class UserDao implements IUserDao {
 
     
     @Override
-    public void addOrder(String userLogin, String status, Date created_at) throws DAOException{
+    public void addOrder(String userLogin, String status, Date created_at, Basket basket) throws DAOException{
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         String strDate = dateFormat.format(created_at);
         Statement stmt = null;
@@ -173,11 +186,33 @@ public class UserDao implements IUserDao {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
             stmt = databaseConnector.getConnection().createStatement();
-            String sql = "INSERT INTO ORDERS(USER_LOGIN, STATUS, CREATED_AT) "
-                        + "VALUES ('" + userLogin + "', '" + status + "', '" + Long.toString(created_at.getTime()) + "');";
+            String sql = "INSERT INTO ORDERS(USER_LOGIN, STATUS, CREATED_AT, PAID_AT) "
+                        + "VALUES ('" + userLogin + "', '" + status + "', '" + Long.toString(created_at.getTime()) + "', '" + "');";
             stmt.executeUpdate(sql);
             databaseConnector.getConnection().commit();
             stmt.close();
+
+            stmt = databaseConnector.getConnection().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT MAX(ID) FROM ORDERS");
+            int maxId = rs.getInt(1);
+            rs.close();
+            stmt.close();
+
+            List<Product> products = basket.getProducts();
+            for (Product product: products) {
+                stmt = databaseConnector.getConnection().createStatement();
+                String name = product.getName();
+                Integer amount = product.getAmount();
+                Double price = product.getPrice();
+                String sqlProduct = "INSERT INTO ORDERED_PRODUCTS(NAME_OF_PRODUCT, PRICE, AMOUNT, ORDER_ID)"
+                        + "VALUES ('" + name + "' , '" + price + "', '" + amount + "', '" + maxId + "');";
+                stmt.executeUpdate(sqlProduct);
+                databaseConnector.getConnection().commit();
+                stmt.close();
+
+            }
+
+
             databaseConnector.getConnection().close();
         } catch (SQLException e) {
             e.printStackTrace();

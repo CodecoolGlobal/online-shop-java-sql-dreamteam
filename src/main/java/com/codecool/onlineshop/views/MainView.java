@@ -1,10 +1,10 @@
 package com.codecool.onlineshop.views;
 
+import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.models.Product;
 
-import java.util.Scanner;
 import java.util.List;
-import com.codecool.onlineshop.containers.*;
+import java.util.Scanner;
 
 public class MainView {
     protected Scanner scanner = new Scanner(System.in);
@@ -99,8 +99,8 @@ public class MainView {
 
 
     public void printStringTable(List<String> list) {
-        for (String item : list) {
-            System.out.println(item);
+        for (int i = 0; i < list.size() ; i++) {
+            System.out.println("(" + (i+1) + ") " + list.get(i));
         }
     }
 

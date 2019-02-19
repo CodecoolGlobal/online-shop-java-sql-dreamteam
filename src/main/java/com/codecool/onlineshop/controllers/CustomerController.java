@@ -1,9 +1,5 @@
 package com.codecool.onlineshop.controllers;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.daos.ProductDao;
@@ -13,6 +9,9 @@ import com.codecool.onlineshop.models.Product;
 import com.codecool.onlineshop.services.CustomerService;
 import com.codecool.onlineshop.services.ServiceException;
 import com.codecool.onlineshop.views.MainView;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class CustomerController {
     private MainView mainView;
@@ -79,6 +78,29 @@ public class CustomerController {
         }
     }
 
+
+//    private void rateProduct(){
+//        printAvailableProducts();
+//        try {
+//            List<Product> products = service.getAllProducts();
+//            mainView.println("Pick which product you want to rate: ");
+//            int productId = mainView.getIntegerInput();
+//
+//            while(productId < 1 || productId > products.size()){
+//                mainView.println("Wrong input. Try again.");
+//                productId = mainView.getIntegerInput();
+//            }
+//        } catch (ServiceException e) {
+//            mainView.println("Cannot get products.");
+//        }
+//
+//
+//    }
+
+
+
+
+
     private void checkIfProductExists() {
         mainView.println("Find product availability\nEnter product name:");
         String name = mainView.getStringInput().trim().toLowerCase();
@@ -129,7 +151,7 @@ public class CustomerController {
     private void placeOrder() {
         try {
             service.placeAnOrder();
-        } catch (DAOException e) {
+        } catch (DAOException | ServiceException e) {
             mainView.println("Cannot place an order");
         }
     }

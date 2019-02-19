@@ -10,6 +10,7 @@ public class Product {
     private boolean isAvailable;
     private Category category;
 
+
     public Product(int id, String name, double price, int amount, boolean isAvailable, Category category) {
 
         this.id = id;
