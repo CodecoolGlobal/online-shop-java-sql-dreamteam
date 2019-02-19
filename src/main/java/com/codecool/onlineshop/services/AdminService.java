@@ -112,6 +112,31 @@ public class AdminService {
         }
     }
 
+    public void editProductName(String productName, String newName){
+        try {
+                productDao.updateProductName(productName, newName);
+                System.out.println("Product name has been changed! ");
+        } catch (DAOException f) {
+            System.out.println("Something went wrong");
+        }
+    }
+    public void editProductPrice(String productName, double newPrice){
+        try {
+            productDao.updateProductPrice(productName, newPrice);
+            System.out.println("Product name has been changed! ");
+        } catch (DAOException f) {
+            System.out.println("Something went wrong");
+        }
+    }
+    public void editProductQuantity(String productName, int newQuantity){
+        try {
+            productDao.updateProductQuantity(productName, newQuantity);
+            System.out.println("Product name has been changed! ");
+        } catch (DAOException f) {
+            System.out.println("Something went wrong");
+        }
+    }
+
     public List<Order> getAllOrders(){
         List<Order> orders = new ArrayList<>();
         try {
