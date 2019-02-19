@@ -43,7 +43,7 @@ public class AdminController {
                     break;
 
                 case 4:
-                    // Edit product
+                    editProduct();
                     break;
                 case 5:
                     deactivateProduct();
@@ -145,7 +145,30 @@ public class AdminController {
         mainView.println("Product deactivated\n");
     }
 
+    private void editProduct(){
+        printListOfCurrentProducts();
+        mainView.println("Choose product to edit: ");
+        String productName = mainView.getStringInput();
+        mainView.print("Choose argument to edit (0 to skip): \n(1) Name \n(2) Price \n(3) Quantity\n");
+        int argument = -1;
+        while(argument < 0 || argument > 3){
+                argument = mainView.getIntegerInput();
+        }
 
+        mainView.println("Provide new value: ");
+
+        if(argument == 1){
+            adminService.editProductName(productName, mainView.getStringInput());
+        }
+        else if(argument == 2){
+            adminService.editProductPrice(productName,mainView.getDoubleInput());
+        }
+        else if(argument == 3){
+            adminService.editProductQuantity(productName, mainView.getIntegerInput());
+        }
+        mainView.clearScreen();
+        mainView.println("Product edited");
+    }
     private void printListOfCurrentProducts() {
         try {
             mainView.printListOfProducts(adminService.getListOfProducts());
