@@ -77,24 +77,9 @@ public class AdminController {
             mainView.println("There are no categories created yet! You need to create one.");
             addNewCategory();
         }
-        mainView.printStringTable(adminService.getCategoryNames());
-        mainView.println("\nPick category which you want add product to: ");
-        int categoryId = mainView.getIntegerInput();
 
-        while(categoryId < 1 || categoryId > adminService.getCategoryNames().size()){
-            mainView.println("Wrong input. Try again.");
-            categoryId = mainView.getIntegerInput();
-        }
-        
-        mainView.println("Type name of new product: ");
-        String productName = mainView.getStringInput().toLowerCase();
-        Boolean isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
-
-        while (isProductNameAvailable == false) {
-            mainView.println("There is already that product in database! Try another one: ");
-            productName = mainView.getStringInput();
-            isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
-        }
+        int categoryId = getCategory();
+        String productName = getProductName();
         attributesOfProduct.add(productName);
 
         mainView.println("Type price of product: ");
@@ -112,6 +97,32 @@ public class AdminController {
         adminService.addNewProduct(attributesOfProduct, categoryId);
         mainView.println("Product has been added! ");
         mainView.getEmptyInput();
+    }
+
+
+    private int getCategory(){
+        mainView.printStringTable(adminService.getCategoryNames());
+        mainView.println("\nPick category which you want add product to: ");
+        int categoryId = mainView.getIntegerInput();
+
+        while(categoryId < 1 || categoryId > adminService.getCategoryNames().size()){
+            mainView.println("Wrong input. Try again.");
+            categoryId = mainView.getIntegerInput();
+        }
+        return categoryId;
+    }
+
+    private String getProductName(){
+        mainView.println("Type name of new product: ");
+        String productName = mainView.getStringInput().toLowerCase();
+        Boolean isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
+
+        while (isProductNameAvailable == false) {
+            mainView.println("There is already that product in database! Try another one: ");
+            productName = mainView.getStringInput();
+            isProductNameAvailable = adminService.checkIfProductInDataBase(productName); 
+        }
+        return productName;
     }
 
 

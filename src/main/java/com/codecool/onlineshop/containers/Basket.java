@@ -33,6 +33,10 @@ public class Basket {
         return list.size();
     }
 
+    public void deleteAllProducts(){
+        list.removeAll(list);
+    }
+
 
 
 
