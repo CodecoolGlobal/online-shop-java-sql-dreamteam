@@ -45,6 +45,16 @@ public class MainView {
         return number;
     }
 
+    public double getDoubleInput() {
+        while (!scanner.hasNextDouble()) {
+            println("Wrong input. Double required.");
+            scanner.nextLine();
+        }
+        double number = scanner.nextInt();
+        scanner.nextLine();
+        return number;
+    }
+
     public boolean getBooleanInput() {
         while (!scanner.hasNextBoolean()) {
             println("Wrong input. true or false required.");

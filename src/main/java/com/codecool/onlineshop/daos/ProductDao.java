@@ -284,6 +284,84 @@ public class ProductDao implements IProductDao {
         }
     }
 
+    public void updateProductName(String oldName, String newName) throws DAOException {
+        String query = "UPDATE Products SET name = ? WHERE name = ?";
+        PreparedStatement statement = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
+            statement.setString(1, newName);
+            statement.setString(2, oldName);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
+    public void updateProductPrice(String oldName, double newPrice) throws DAOException {
+        String query = "UPDATE Products SET price = ? WHERE name = ?";
+        PreparedStatement statement = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
+            statement.setDouble(1, newPrice);
+            statement.setString(2, oldName);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
+    public void updateProductQuantity(String oldName, int newQuantity) throws DAOException {
+        String query = "UPDATE Products SET amount = ? WHERE name = ?";
+        PreparedStatement statement = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
+            statement.setInt(1, newQuantity);
+            statement.setString(2, oldName);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
     public void addNewProduct(List<String> newProductData, int categoryId) throws DAOException {
         String query = "INSERT INTO Products(name, price, amount, available, category_id, featured_category_id) "
                         + "VALUES (?, ?, ?, ?, ?, 0)";
