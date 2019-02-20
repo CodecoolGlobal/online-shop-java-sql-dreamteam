@@ -51,6 +51,9 @@ public class AdminController {
                 case 6:
                     getAllOrders();
                     break;
+                case 7:
+                    //set a discount
+                    break;
                 case 0:
                     choice = 0;
                     break;
