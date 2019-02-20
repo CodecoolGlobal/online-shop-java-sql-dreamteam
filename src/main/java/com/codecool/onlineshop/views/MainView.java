@@ -104,6 +104,16 @@ public class MainView {
         }
     }
 
+    public int getRateInput() {
+        String rate = scanner.nextLine();
+        while(!rate.matches("[12345]")){
+            println("Wrong number. Scale is 1-5");
+            rate = scanner.nextLine();
+        }
+        return Integer.parseInt(rate);
+    }
+
+
 
     public int getIntegerInputInParition(int range) {
         while (!scanner.hasNextInt()) {

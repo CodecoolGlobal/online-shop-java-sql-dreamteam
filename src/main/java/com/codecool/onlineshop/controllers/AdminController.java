@@ -1,15 +1,16 @@
 package com.codecool.onlineshop.controllers;
 
+import com.codecool.onlineshop.containers.Order;
+import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.daos.ProductDao;
 import com.codecool.onlineshop.daos.UserDao;
-import com.codecool.onlineshop.services.ServiceException;
-import com.codecool.onlineshop.views.MainView;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.services.AdminService;
-import com.codecool.onlineshop.containers.*;
+import com.codecool.onlineshop.services.ServiceException;
+import com.codecool.onlineshop.views.MainView;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdminController {
     private MainView mainView;
@@ -29,6 +30,7 @@ public class AdminController {
         mainView.clearScreen();
         int choice = -1;
         while (choice != 0) {
+            changeStatusesOfOrders();
             mainView.printAdminMenu();
             choice = mainView.getIntegerInput();
             switch (choice) {
@@ -181,6 +183,17 @@ public class AdminController {
         List<Order> orders = adminService.getAllOrders();
         mainView.printAllOrders(orders);
     }
+
+    private void changeStatusesOfOrders(){
+        try{
+            adminService.changeStatuses();
+        }
+        catch (DAOException e){
+            mainView.println("Statuses cannot be changed");
+        }
+    }
+
+
 
 
 }

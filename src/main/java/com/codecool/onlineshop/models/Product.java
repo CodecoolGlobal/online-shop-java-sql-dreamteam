@@ -9,9 +9,10 @@ public class Product {
     private int amount;
     private boolean isAvailable;
     private Category category;
+    private float rate;
 
 
-    public Product(int id, String name, double price, int amount, boolean isAvailable, Category category) {
+    public Product(int id, String name, double price, int amount, boolean isAvailable, Category category, float rate) {
 
         this.id = id;
         this.name = name;
@@ -19,6 +20,7 @@ public class Product {
         this.amount = amount;
         this.isAvailable = isAvailable;
         this.category = category;
+        this.rate = rate;
     }
 
     public Product(String name, double price, int amount){
@@ -92,5 +94,7 @@ public class Product {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    public float getRate(){ return rate;}
 
 }

@@ -12,9 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 public class UserDao implements IUserDao {
@@ -280,7 +278,6 @@ public class UserDao implements IUserDao {
         long timeFromPaymentToSend = 60000;
         long timeFromSendToDeliver = 120000;
 
-
         Statement stmt = null;
         Statement stmt2 = null;
         Statement stmt3 = null;
@@ -317,6 +314,32 @@ public class UserDao implements IUserDao {
         }
         catch (SQLException e){
             throw new DAOException(e.getMessage());
+        }
+    }
+
+    public Set<Product> getDeliveredProductsByUserName(String userName) throws DAOException{
+        Set<Product> deliveredProducts = new HashSet<>();
+        Statement stmt = null;
+        try {
+            databaseConnector.connectToDatabase();
+            databaseConnector.getConnection().setAutoCommit(false);
+            stmt = databaseConnector.getConnection().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT NAME_OF_PRODUCT, PRICE, AMOUNT FROM " +
+                    "ORDERS  LEFT JOIN ORDERED_PRODUCTS ON ORDERS.ID = ORDERED_PRODUCTS.ORDER_ID WHERE STATUS ='delivered' " +
+                    "AND" + " USER_LOGIN= '" + userName + "';");
+            while (rs.next()){
+                String name = rs.getString("NAME_OF_PRODUCT");
+                Double price = rs.getDouble("PRICE");
+                Integer amount = rs.getInt("AMOUNT");
+                Product product = new Product(name, price, amount);
+                deliveredProducts.add(product);
+    }
+            rs.close();
+            stmt.close();
+            databaseConnector.getConnection().close();
+            return deliveredProducts;
+        } catch (SQLException e) {
+            throw new DAOException("Something went wrong.");
         }
     }
 

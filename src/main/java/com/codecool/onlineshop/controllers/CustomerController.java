@@ -10,8 +10,7 @@ import com.codecool.onlineshop.services.CustomerService;
 import com.codecool.onlineshop.services.ServiceException;
 import com.codecool.onlineshop.views.MainView;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class CustomerController {
     private MainView mainView;
@@ -26,6 +25,8 @@ public class CustomerController {
 
     public void run() {
         mainView.clearScreen();
+        changeStatusesOfOrders();
+        rateProducts();
         int choice = -1;
         while (choice != 0) {
             changeStatusesOfOrders();
@@ -302,7 +303,27 @@ public class CustomerController {
             service.changeStatuses();
         }
         catch (DAOException e){
-            mainView.println("Statuses cannot be change");
+            mainView.println("Statuses cannot be changed");
+        }
+    }
+
+    private void rateProducts(){
+        try{
+            Set<Product> products = service.getDeliveredProducts();
+            Map<String , Integer> rates = new HashMap<>();
+            if(!products.isEmpty()){
+                for (Product product: products) {
+                    mainView.println("Type rate (1-5) for:  " + product.getName());
+                    int rate = mainView.getRateInput();
+                    rates.put(product.getName(), rate);
+                }
+                service.updateProductsRatings(rates);
+                mainView.println("Thank you!");
+            }
+
+        }
+        catch (DAOException e){
+            mainView.println("something went wrong");
         }
     }
 

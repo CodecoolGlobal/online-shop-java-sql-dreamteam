@@ -7,10 +7,7 @@ import com.codecool.onlineshop.daos.UserDao;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.Product;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CustomerService  {
@@ -66,7 +63,7 @@ public class CustomerService  {
     }
 
     public void addProduct(Product product, int amount) {
-        Product productToAdd = new Product(product.getId(), product.getName(), product.getPrice(), amount, product.isAvailable(), product.getCategory());
+        Product productToAdd = new Product(product.getId(), product.getName(), product.getPrice(), amount, product.isAvailable(), product.getCategory(), product.getRate());
         customer.getBasket().addProduct(productToAdd);
     }
 
@@ -160,5 +157,13 @@ public class CustomerService  {
         userDao.changeStatusesOfOrders();
     }
 
+    public Set<Product> getDeliveredProducts() throws DAOException{
+        Set<Product> products = userDao.getDeliveredProductsByUserName(customer.getName());
+        return products;
+    }
+
+    public void updateProductsRatings(Map<String, Integer> rates) throws DAOException{
+        productDao.updateRatings(rates);
+    }
 
 }
