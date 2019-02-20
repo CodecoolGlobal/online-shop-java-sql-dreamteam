@@ -61,7 +61,7 @@ public class UserDaoStub extends UserDao {
                 currentUser = user;
             }
         }
-        orders.add(new Order(orders.get(orders.size()-1).getId() + 1, null, currentUser, new Date(), null, "submitted"));
+        orders.add(new Order(orders.get(orders.size()-1).getId() + 1, null, currentUser, created_at, null, status));
     }
 
     @Override
