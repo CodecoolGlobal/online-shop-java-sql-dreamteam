@@ -1,5 +1,8 @@
 package com.codecool.onlineshop.daos;
 
+import com.codecool.onlineshop.containers.Category;
+import com.codecool.onlineshop.models.Product;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,9 +10,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.codecool.onlineshop.containers.Category;
-import com.codecool.onlineshop.models.Product;
 
 public class ProductDao implements IProductDao {
 
@@ -350,7 +350,9 @@ public class ProductDao implements IProductDao {
             statement.setInt(1, newQuantity);
             statement.setString(2, oldName);
             statement.executeUpdate();
-
+            if (newQuantity == 0) {
+                deactivateProduct(oldName);
+            }
         } catch (SQLException e) {
             throw new DAOException("message");
         } catch (Exception e) {
@@ -436,6 +438,10 @@ public class ProductDao implements IProductDao {
             statement.setInt(5, categoryId);
             statement.setInt(6, productID);
             statement.executeUpdate();
+            Product justEdited = getProductById(productID);
+            if (justEdited.getAmount() == 0) {
+                deactivateProduct(justEdited.getName());
+            }
 
         } catch (SQLException e) {
             throw new DAOException("message");
