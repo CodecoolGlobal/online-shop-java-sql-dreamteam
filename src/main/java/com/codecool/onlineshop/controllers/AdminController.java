@@ -7,7 +7,12 @@ import com.codecool.onlineshop.views.MainView;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.services.AdminService;
 import com.codecool.onlineshop.containers.*;
+import com.sun.xml.internal.bind.v2.TODO;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -52,7 +57,11 @@ public class AdminController {
                     getAllOrders();
                     break;
                 case 7:
-                    //set a discount
+                    //add new featured category
+                    addNewFeaturedCategory();
+                case 8:
+                    //feature a product
+                    featureProduct();
                     break;
                 case 0:
                     choice = 0;
@@ -71,6 +80,27 @@ public class AdminController {
         String categoryName = mainView.getStringInput();
         adminService.addNewCategory(categoryName.toLowerCase());
         mainView.getEmptyInput();
+    }
+
+    private void addNewFeaturedCategory(){
+        mainView.println("Type name of new category: ");
+        String categoryName = mainView.getStringInput();
+        mainView.println("Please provide expiration date in the following format");
+        mainView.println("[ yyyy-mm-dd ]");
+        String strExpirationDate = mainView.getStringInput();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        try{
+            Date expirationDate = dateFormat.parse(strExpirationDate);
+            String strDate = dateFormat.format(strExpirationDate);
+            adminService.addNewFeaturedCategory(categoryName.toLowerCase(), expirationDate);
+            mainView.getEmptyInput();
+        }
+        catch (ParseException e) {
+            System.out.println("ParseError " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void addNewProduct(){
@@ -148,6 +178,22 @@ public class AdminController {
         mainView.println("Product deactivated\n");
     }
 
+    private void featureProduct(){
+        mainView.printStringTable(adminService.getFeaturedCategoryNames());
+        mainView.println("Choose featured category: ");
+        String categoryName = mainView.getStringInput();
+
+        mainView.clearScreen();
+
+        printListOfCurrentProducts();
+        mainView.println("Choose product for discount: ");
+        String productName = mainView.getStringInput();
+;
+        adminService.featureProduct(categoryName, productName);
+        mainView.clearScreen();
+        mainView.println("Discount for the product has been set\n");
+    }
+
     private void editProduct(){
         printListOfCurrentProducts();
         mainView.println("Choose product to edit: ");
@@ -170,7 +216,7 @@ public class AdminController {
             adminService.editProductQuantity(productName, mainView.getIntegerInput());
         }
         mainView.clearScreen();
-        mainView.println("Product edited");
+        mainView.println("Product edited\n");
     }
     private void printListOfCurrentProducts() {
         try {

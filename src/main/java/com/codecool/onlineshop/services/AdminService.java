@@ -3,6 +3,7 @@ package com.codecool.onlineshop.services;
 import com.codecool.onlineshop.models.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.codecool.onlineshop.containers.*;
@@ -30,6 +31,20 @@ public class AdminService {
         } catch (DAOException e) {
             try {
                 productDao.addNewCategory(name);
+                System.out.println("Category has been added.");
+            } catch (DAOException f) {
+                System.out.println("Something went wrong");
+            }
+        }
+    }
+
+    public void addNewFeaturedCategory(String name, Date expirationDate){
+        try {
+            productDao.getCategoryIdByName(name);
+            System.out.println("There is already that category in database!");
+        } catch (DAOException e) {
+            try {
+                productDao.addNewFeaturedCategory(name, expirationDate);
                 System.out.println("Category has been added.");
             } catch (DAOException f) {
                 System.out.println("Something went wrong");
@@ -73,7 +88,16 @@ public class AdminService {
         return categoryNames;
     }
 
-
+    public List<String> getFeaturedCategoryNames() {
+        List<String> names = new ArrayList<>();
+        try{
+            names = productDao.getAllFeaturedCategoryNames();
+            return names;
+        } catch (Exception e){
+            System.out.println("Something went wrong!");
+        }
+        return names;
+    }
     public void deactivateProduct(String name) {
         try {
             productDao.deactivateProduct(name);
@@ -112,6 +136,21 @@ public class AdminService {
         }
     }
 
+    public void featureProduct(String categoryName, String productName){
+
+        try{
+            if (productDao.getFeaturedCategoryIdByName(categoryName) != null ) {
+                if (productDao.getProductByName(productName) != null){
+
+                    productDao.featureProduct(productDao.getFeaturedCategoryIdByName(categoryName), productName);
+                    System.out.println("Product has been featured!");
+                } else{ System.out.println("Product doesnt exist"); }
+            } else{ System.out.println("Category doesnt exist");}
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
     public void editProductName(String productName, String newName){
         try {
                 productDao.updateProductName(productName, newName);
