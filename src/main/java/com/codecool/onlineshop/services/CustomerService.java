@@ -155,4 +155,10 @@ public class CustomerService  {
         throw new ServiceException("There is no such order Id or you already paid for it.");
 
     }
+
+    public void changeStatuses() throws DAOException{
+        userDao.changeStatusesOfOrders();
+    }
+
+
 }

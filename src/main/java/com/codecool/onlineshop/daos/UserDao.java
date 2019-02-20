@@ -254,9 +254,6 @@ public class UserDao implements IUserDao {
     }
 
 
-    
-
-
     @Override
     public void changeStatusToPaid(int orderId) throws DAOException {
         Statement stmt = null;
@@ -276,7 +273,55 @@ public class UserDao implements IUserDao {
         }
     }
 
-    
+    public void changeStatusesOfOrders() throws DAOException{
+
+        Date dateOfNow = new Date();
+        Long timeOfNow = dateOfNow.getTime();
+        long timeFromPaymentToSend = 60000;
+        long timeFromSendToDeliver = 120000;
+
+
+        Statement stmt = null;
+        Statement stmt2 = null;
+        Statement stmt3 = null;
+        try {
+            databaseConnector.connectToDatabase();
+            databaseConnector.getConnection().setAutoCommit(false);
+            stmt = databaseConnector.getConnection().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT ID, STATUS, CREATED_AT, PAID_AT FROM ORDERS");
+            while(rs.next()){
+                Date paid_at = null;
+                if (rs.getString("paid_at") != null) {
+                    int orderId = rs.getInt("ID");
+                    paid_at = new Date(Long.valueOf(rs.getString("paid_at")));
+                    Long timeOfPayment = paid_at.getTime();
+                    if((timeOfNow-timeOfPayment)>timeFromPaymentToSend){
+                        stmt2 = databaseConnector.getConnection().createStatement();
+                        String sql ="UPDATE ORDERS set STATUS = 'on the way'" + " WHERE ID = '" + orderId + "';";
+                        stmt2.executeUpdate(sql);
+                        databaseConnector.getConnection().commit();
+                        stmt2.close();
+                    }
+                    if((timeOfNow-timeOfPayment)>timeFromSendToDeliver){
+                        stmt3 = databaseConnector.getConnection().createStatement();
+                        String sql ="UPDATE ORDERS set STATUS = 'delivered'" + " WHERE ID = '" + orderId + "';";
+                        stmt3.executeUpdate(sql);
+                        databaseConnector.getConnection().commit();
+                        stmt3.close();
+                    }
+                 }
+            }
+            rs.close();
+            stmt.close();
+            databaseConnector.getConnection().close();
+        }
+        catch (SQLException e){
+            throw new DAOException(e.getMessage());
+        }
+    }
+
+
 
 
 }
+

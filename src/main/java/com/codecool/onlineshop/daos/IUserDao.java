@@ -22,4 +22,6 @@ public interface IUserDao {
     void addCustomer(String login, String password) throws DAOException;
 
     void changeStatusToPaid(int orderId) throws DAOException;
+
+    void changeStatusesOfOrders() throws DAOException;
 }

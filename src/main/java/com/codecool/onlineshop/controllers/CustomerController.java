@@ -28,6 +28,7 @@ public class CustomerController {
         mainView.clearScreen();
         int choice = -1;
         while (choice != 0) {
+            changeStatusesOfOrders();
             mainView.printCustomerMenu();
             choice = mainView.getIntegerInput();
             switch (choice) {
@@ -85,8 +86,6 @@ public class CustomerController {
 
 
 
-
-
     private void payForOrder(){
         showPreviousOrders();
         mainView.println("Which order you want to pay?");
@@ -100,8 +99,6 @@ public class CustomerController {
         }
 
     }
-
-
 
 
     private void checkIfProductExists() {
@@ -299,4 +296,14 @@ public class CustomerController {
             i++;
         }
     }
+
+    private void changeStatusesOfOrders(){
+        try{
+            service.changeStatuses();
+        }
+        catch (DAOException e){
+            mainView.println("Statuses cannot be change");
+        }
+    }
+
 }
