@@ -16,6 +16,11 @@ public class Basket {
         this.id = id;
         this.list = list;
     }
+
+    public Basket(List<Product> list){
+        this.list = list;
+    }
+
     public Iterator getIterator(){
         return new BasketIterator(this.list);
     }

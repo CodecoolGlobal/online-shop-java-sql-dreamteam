@@ -68,6 +68,11 @@ public class CustomerController {
                     // Check product availability
                     checkIfProductExists();
                     break;
+
+                case 10:
+                    // pay for order
+                    payForOrder();
+                    break;
                 case 0:
                     choice = 0;
                     break;
@@ -79,24 +84,13 @@ public class CustomerController {
     }
 
 
-//    private void rateProduct(){
-//        printAvailableProducts();
-//        try {
-//            List<Product> products = service.getAllProducts();
-//            mainView.println("Pick which product you want to rate: ");
-//            int productId = mainView.getIntegerInput();
-//
-//            while(productId < 1 || productId > products.size()){
-//                mainView.println("Wrong input. Try again.");
-//                productId = mainView.getIntegerInput();
-//            }
-//        } catch (ServiceException e) {
-//            mainView.println("Cannot get products.");
-//        }
-//
-//
-//    }
 
+
+
+    private void payForOrder(){
+        showPreviousOrders();
+        mainView.println("Order has been paid.");
+    }
 
 
 

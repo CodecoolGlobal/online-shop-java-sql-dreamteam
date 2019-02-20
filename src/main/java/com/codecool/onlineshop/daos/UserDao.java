@@ -146,13 +146,15 @@ public class UserDao implements IUserDao {
     @Override
     public List<Order> getOrdersByUserName(String userName) throws DAOException{
         Statement stmt = null;
+        Statement stmt2 = null;
         List<Order> orders = new ArrayList<Order>();
         try {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
             stmt = databaseConnector.getConnection().createStatement();
 
-            ResultSet rs = stmt.executeQuery("SELECT ORDERS.ID, STATUS, CREATED_AT, PAID_AT, USER_LOGIN, PASSWORD FROM ORDERS  LEFT JOIN USERS ON ORDERS.USER_LOGIN = USERS.LOGIN WHERE LOGIN = '" + userName + "'");
+            ResultSet rs = stmt.executeQuery("SELECT ORDERS.ID, STATUS, CREATED_AT, PAID_AT, USER_LOGIN, PASSWORD FROM " +
+                    "ORDERS  LEFT JOIN USERS ON ORDERS.USER_LOGIN = USERS.LOGIN WHERE LOGIN = '" + userName + "'");
         while (rs.next()){
             Integer id = rs.getInt("ID");
             String login = rs.getString("user_login");
@@ -163,9 +165,26 @@ public class UserDao implements IUserDao {
                 paid_at = new Date(Long.valueOf(rs.getString("paid_at")));
             }
             String status = rs.getString("status");
-            User user = new User(login, password);
-            orders.add(new Order(id, null, user, created_at, paid_at, status));
+
+            stmt2 = databaseConnector.getConnection().createStatement();
+            ResultSet rs2 = stmt2.executeQuery("SELECT ORDERS.ID, NAME_OF_PRODUCT, PRICE, AMOUNT FROM ORDERS  LEFT JOIN USERS ON ORDERS.USER_LOGIN = " +
+                    "USERS.LOGIN LEFT JOIN ORDERED_PRODUCTS ON  ORDERS.ID = ORDERED_PRODUCTS.ORDER_ID  WHERE ORDERS.ID = '" + id + "'");
+
+            List<Product> products = new ArrayList<>();
+            while(rs2.next()) {
+                String name = rs2.getString("NAME_OF_PRODUCT");
+                double price = rs2.getDouble("PRICE");
+                Integer amount = rs2.getInt("AMOUNT");
+                products.add(new Product(name, price,amount ));
             }
+            rs2.close();
+            Basket basket = new Basket(products);
+
+            User user = new User(login, password);
+            orders.add(new Order(id, basket, user, created_at, paid_at, status));
+            }
+
+
         rs.close();
         stmt.close();
         databaseConnector.getConnection().close();
@@ -186,8 +205,8 @@ public class UserDao implements IUserDao {
             databaseConnector.connectToDatabase();
             databaseConnector.getConnection().setAutoCommit(false);
             stmt = databaseConnector.getConnection().createStatement();
-            String sql = "INSERT INTO ORDERS(USER_LOGIN, STATUS, CREATED_AT, PAID_AT) "
-                        + "VALUES ('" + userLogin + "', '" + status + "', '" + Long.toString(created_at.getTime()) + "', '" + "');";
+            String sql = "INSERT INTO ORDERS(USER_LOGIN, STATUS, CREATED_AT) "
+                        + "VALUES ('" + userLogin + "', '" + status + "', '" + Long.toString(created_at.getTime()) + "');";
             stmt.executeUpdate(sql);
             databaseConnector.getConnection().commit();
             stmt.close();
@@ -209,9 +228,7 @@ public class UserDao implements IUserDao {
                 stmt.executeUpdate(sqlProduct);
                 databaseConnector.getConnection().commit();
                 stmt.close();
-
             }
-
 
             databaseConnector.getConnection().close();
         } catch (SQLException e) {

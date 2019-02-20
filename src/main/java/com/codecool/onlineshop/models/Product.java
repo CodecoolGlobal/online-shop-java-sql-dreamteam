@@ -21,6 +21,12 @@ public class Product {
         this.category = category;
     }
 
+    public Product(String name, double price, int amount){
+        this.name = name;
+        this.price = price;
+        this.amount = amount;
+    }
+
     public String productToString(){
         StringBuilder string = new StringBuilder();
         string.append("id: ");

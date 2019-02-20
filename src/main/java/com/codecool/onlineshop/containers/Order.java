@@ -75,5 +75,7 @@ public class Order {
         return status;
     }
 
+    public Basket getBasket() {return basket;}
+
 
 }
