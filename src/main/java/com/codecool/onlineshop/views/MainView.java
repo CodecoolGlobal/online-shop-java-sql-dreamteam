@@ -32,7 +32,8 @@ public class MainView {
 
     public void printAdminMenu() {
         println("(1) Create a new category \n" + "(2) Edit category name \n" + "(3) Add new product \n" +
-                "(4) Edit a product \n" + "(5) Deactivate a product \n" + "(6) Show all orders \n" + "(0) Exit \n");
+                "(4) Edit a product \n" + "(5) Deactivate a product \n" + "(6) Show all orders \n" +
+                "(7) Set a discount" + "(0) Exit \n");
     }
 
     public int getIntegerInput() {
