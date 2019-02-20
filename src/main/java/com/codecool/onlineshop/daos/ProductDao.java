@@ -336,6 +336,11 @@ public class ProductDao implements IProductDao {
         }
     }
 
+   /* public boolean isProductQutOfStock(Product product){
+        String query = "SELECT name FROM"
+
+    }*/
+
     public void updateProductQuantity(String oldName, int newQuantity) throws DAOException {
         String query = "UPDATE Products SET amount = ? WHERE name = ?";
         PreparedStatement statement = null;
