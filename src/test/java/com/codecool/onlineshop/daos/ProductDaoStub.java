@@ -14,7 +14,7 @@ public class ProductDaoStub extends ProductDao{
     List<Category> categories = new ArrayList<>();
     List<FeaturedCategory> featuredCategories = new ArrayList<>();
 
-    ProductDaoStub() {
+    public ProductDaoStub() {
         populateListsWithData();
     }
 
@@ -116,9 +116,9 @@ public class ProductDaoStub extends ProductDao{
 
     @Override
     public void updateCategoryName(String oldName, String newName) throws DAOException {
-        for (Product product : products) {
-            if (product.getName().equals(oldName)) {
-                product.setName(newName);
+        for (Category category : categories) {
+            if (category.getName().equals(oldName)) {
+                category.setName(newName);
                 break;
             }
         }
