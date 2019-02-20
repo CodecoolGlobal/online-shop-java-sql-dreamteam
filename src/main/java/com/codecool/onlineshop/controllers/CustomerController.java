@@ -89,7 +89,16 @@ public class CustomerController {
 
     private void payForOrder(){
         showPreviousOrders();
-        mainView.println("Order has been paid.");
+        mainView.println("Which order you want to pay?");
+        int orderId = mainView.getIntegerInput();
+        try{
+            service.payForOrder(orderId);
+            mainView.println("Order has been paid.");
+        }
+        catch (DAOException | ServiceException e){
+            mainView.println(e.getMessage());
+        }
+
     }
 
 
@@ -141,6 +150,25 @@ public class CustomerController {
             mainView.println("Cannot get orders");
         }
     }
+
+
+    private void showUnpaidOrders(){
+        try {
+            List<Order> orders = service.getCustomerOrders();
+            mainView.println("------------------");
+            mainView.println("Your orders:");
+            for (int i = 0; i < orders.size(); i++){
+                if(orders.get(i).getStatus().equals("submited")){
+                mainView.print(i + ". ");
+                mainView.println(orders.get(i).toString());
+            }
+        }}
+            catch (DAOException e) {
+            mainView.println("You have paid for all of your orders.");
+        }
+    }
+
+
 
     private void placeOrder() {
         try {

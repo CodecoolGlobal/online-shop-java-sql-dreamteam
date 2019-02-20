@@ -143,4 +143,16 @@ public class CustomerService  {
         throw new ServiceException("Product does not exists.");
 
     }
+
+    public void payForOrder(int orderId) throws DAOException, ServiceException{
+        List<Order> orders = getCustomerOrders();
+        for (Order order: orders) {
+            if(order.getId() == orderId && order.getStatus().equals("submited")){
+                userDao.changeStatusToPaid(orderId);
+                return;
+            }
+        }
+        throw new ServiceException("There is no such order Id or you already paid for it.");
+
+    }
 }

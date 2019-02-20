@@ -1,5 +1,6 @@
 package com.codecool.onlineshop.containers;
 
+import com.codecool.onlineshop.models.Product;
 import com.codecool.onlineshop.models.User;
 
 import java.text.DateFormat;
@@ -47,6 +48,9 @@ public class Order {
         if (orderPayAt != null) {
             sb.append(", paid At: ");
             sb.append(df.format(orderPayAt));
+        }
+        for (Product product: getBasket().getProducts()) {
+            sb.append("\n\t" + product.getName() + " " + product.getAmount() + " " + product.getPrice());
         }
         return sb.toString();
     }

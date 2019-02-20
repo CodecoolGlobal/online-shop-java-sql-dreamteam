@@ -20,4 +20,6 @@ public interface IUserDao {
     List<Order> getAllOrders() throws DAOException;
 
     void addCustomer(String login, String password) throws DAOException;
+
+    void changeStatusToPaid(int orderId) throws DAOException;
 }

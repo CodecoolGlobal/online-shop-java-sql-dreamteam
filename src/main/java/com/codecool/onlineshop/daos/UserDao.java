@@ -183,8 +183,6 @@ public class UserDao implements IUserDao {
             User user = new User(login, password);
             orders.add(new Order(id, basket, user, created_at, paid_at, status));
             }
-
-
         rs.close();
         stmt.close();
         databaseConnector.getConnection().close();
@@ -259,7 +257,24 @@ public class UserDao implements IUserDao {
     
 
 
-
+    @Override
+    public void changeStatusToPaid(int orderId) throws DAOException {
+        Statement stmt = null;
+        Date paymentDate = new Date();
+        try{
+            databaseConnector.connectToDatabase();
+            databaseConnector.getConnection().setAutoCommit(false);
+            stmt = databaseConnector.getConnection().createStatement();
+            String sql ="UPDATE ORDERS set PAID_AT = + '" + Long.toString(paymentDate.getTime()) + "' " + ", STATUS = 'paid'" + " WHERE ID = '" + orderId + "';";
+            stmt.executeUpdate(sql);
+            databaseConnector.getConnection().commit();
+            stmt.close();
+            databaseConnector.getConnection().close();
+        }
+        catch(SQLException e){
+           throw new DAOException("Wrong order ID! ");
+        }
+    }
 
     
 
