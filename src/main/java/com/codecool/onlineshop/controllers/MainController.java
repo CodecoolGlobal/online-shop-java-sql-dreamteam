@@ -1,14 +1,11 @@
 package com.codecool.onlineshop.controllers;
 
-import javax.swing.text.View;
-
 import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.daos.UserDao;
 import com.codecool.onlineshop.models.Admin;
 import com.codecool.onlineshop.models.Customer;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.views.MainView;
-import com.codecool.onlineshop.services.*;
 
 public class MainController {
     private MainView mainView;
@@ -55,14 +52,14 @@ public class MainController {
 
     private void handleAdmin() {
         Admin admin = (Admin) user;
-        mainView.print("Im admin");
+        mainView.print("Im admin\n");
         AdminController adminController = new AdminController(user);
         adminController.run();
     }
 
     private void handleCustomer() {
         Customer customer = (Customer) user;
-        mainView.print("Im customer");
+        mainView.print("Im customer\n");
         CustomerController controller = new CustomerController(customer);
         controller.run();
     }

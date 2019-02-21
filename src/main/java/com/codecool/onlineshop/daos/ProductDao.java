@@ -1,15 +1,16 @@
 package com.codecool.onlineshop.daos;
 
+import com.codecool.onlineshop.containers.Category;
+import com.codecool.onlineshop.models.Product;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.codecool.onlineshop.containers.Category;
-import com.codecool.onlineshop.models.Product;
 
 public class ProductDao implements IProductDao {
 
@@ -34,6 +35,9 @@ public class ProductDao implements IProductDao {
                             + "amount INTEGER DEFAULT 1, "
                             + "available TEXT DEFAULT 'true', "
                             + "category_id INTEGER NOT NULL, "
+                            + "number_of_rates INTEGER, "
+                            + "sum_of_rates INTEGER, "
+                            + "rate REAL, "
                             + "featured_category_id INTEGER NOT NULL)";
 
         String categoryQuery = "CREATE TABLE IF NOT EXISTS Category("
@@ -368,8 +372,8 @@ public class ProductDao implements IProductDao {
     }
 
     public void addNewProduct(List<String> newProductData, int categoryId) throws DAOException {
-        String query = "INSERT INTO Products(name, price, amount, available, category_id, featured_category_id) "
-                        + "VALUES (?, ?, ?, ?, ?, 0)";
+        String query = "INSERT INTO Products(name, price, amount, available, category_id, featured_category_id, number_of_rates, sum_of_rates, rate) "
+                        + "VALUES (?, ?, ?, ?, ?, 0, 0, 0, 0)";
         PreparedStatement statement = null;
         try {
             databaseConnector.connectToDatabase();
@@ -545,8 +549,45 @@ public class ProductDao implements IProductDao {
                 results.getDouble("price"),
                 results.getInt("amount"),
                 Boolean.valueOf(results.getString("available")),
-                category);
+                category,
+                results.getFloat("rate"));
         return product;
     }
+
+    public void  updateRatings(Map<String, Integer> rates) throws DAOException{
+        Statement stmt = null;
+        try{
+            databaseConnector.connectToDatabase();
+            databaseConnector.getConnection().setAutoCommit(false);
+            for(Map.Entry<String, Integer> entry : rates.entrySet()){
+                stmt = databaseConnector.getConnection().createStatement();
+                String sql ="UPDATE PRODUCTS set NUMBER_OF_RATES = NUMBER_OF_RATES + 1, SUM_OF_RATES = SUM_OF_RATES +" + "'" + entry.getValue() + "'"
+                        + " WHERE NAME = '" + entry.getKey().toLowerCase() + "';";
+                stmt.executeUpdate(sql);
+                databaseConnector.getConnection().commit();
+                stmt.close();
+
+                stmt = databaseConnector.getConnection().createStatement();
+                String sql2 ="UPDATE PRODUCTS set RATE = ROUND(CAST(SUM_OF_RATES AS FLOAT)/CAST(NUMBER_OF_RATES AS FLOAT), 2)"
+                        + " WHERE NAME = '" + entry.getKey().toLowerCase() + "';";
+                stmt.executeUpdate(sql2);
+                databaseConnector.getConnection().commit();
+                stmt.close();
+            }
+        }
+        catch(SQLException e){
+            throw new DAOException();
+        }
+
+    }
+
+
+
+
+
+
+
+
+
 
 }

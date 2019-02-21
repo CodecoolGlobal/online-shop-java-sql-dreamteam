@@ -2,6 +2,7 @@ package com.codecool.onlineshop.daos;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductDaoTest {
 
     static ProductDao productDao = new ProductDao();
-
+    @Disabled
     @BeforeAll
     static void initAll() {
         List<String> productData = new ArrayList<>();
@@ -61,7 +62,7 @@ class ProductDaoTest {
             e.printStackTrace();
         }
     }
-
+    @Disabled
     @AfterAll
     static void tearDownAll() {
         File file = new File("onlineShop.db");
