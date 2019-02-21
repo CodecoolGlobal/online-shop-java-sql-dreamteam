@@ -10,7 +10,7 @@ import com.codecool.onlineshop.models.Product;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CustomerService  {
+public class CustomerService {
     private Customer customer;
     private ProductDao productDao;
     private UserDao userDao;
@@ -21,7 +21,9 @@ public class CustomerService  {
         this.userDao = userDao;
     }
 
-    public Customer getCustomer(){ return this.customer;}
+    public Customer getCustomer() {
+        return this.customer;
+    }
 
     public Iterator getBusketIterator() {
         return customer.getBasket().getIterator();
@@ -68,7 +70,7 @@ public class CustomerService  {
     }
 
     public void deleteProductFromBasket(Product basketPproduct) {
-            customer.getBasket().deleteProduct(basketPproduct);
+        customer.getBasket().deleteProduct(basketPproduct);
     }
 
     public void editNumberOf(int productId, int amount) {
@@ -82,10 +84,10 @@ public class CustomerService  {
         }
     }
 
-    public List<Product> getAllProducts() throws ServiceException{
+    public List<Product> getAllProducts() throws ServiceException {
         try {
             return productDao.getAvailableProducts();
-        } catch (DAOException e ) {
+        } catch (DAOException e) {
             throw new ServiceException();
         }
     }
@@ -94,13 +96,13 @@ public class CustomerService  {
         try {
             return productDao.getProductById(id);
         } catch (DAOException e) {
-            
+
         }
         return null;
     }
 
     public void placeAnOrder() throws DAOException, ServiceException {
-        if(customer.getBasket().getProducts().isEmpty()){
+        if (customer.getBasket().getProducts().isEmpty()) {
             throw new ServiceException("You cant place an empty order!");
         }
         userDao.addOrder(getCustomerName(), "submited", new Date(), getCustomer().getBasket());
@@ -118,8 +120,14 @@ public class CustomerService  {
         customer.getBasket().deleteAllProducts();
     }
 
-    public List<Order> getCustomerOrders() throws DAOException{
+    public List<Order> getCustomerOrders() throws DAOException {
         List<Order> orders = userDao.getOrdersByUserName(customer.getName());
+        return orders;
+    }
+
+
+    public List<Order> getUnratedAndDeliveredOrders() throws DAOException{
+        List<Order> orders = userDao.getUnratedAndDeliveredOrdersByUserName(customer.getName());
         return orders;
     }
 
@@ -130,10 +138,10 @@ public class CustomerService  {
         return products;
     }
 
-    public Product getProductByName(String productName) throws DAOException, ServiceException{
+    public Product getProductByName(String productName) throws DAOException, ServiceException {
         List<Product> products = productDao.getAvailableProducts();
         for (Product product : products) {
-            if(product.getName().equals(productName)){
+            if (product.getName().equals(productName)) {
                 return product;
             }
         }
@@ -141,10 +149,10 @@ public class CustomerService  {
 
     }
 
-    public void payForOrder(int orderId) throws DAOException, ServiceException{
+    public void payForOrder(int orderId) throws DAOException, ServiceException {
         List<Order> orders = getCustomerOrders();
-        for (Order order: orders) {
-            if(order.getId() == orderId && order.getStatus().equals("submited")){
+        for (Order order : orders) {
+            if (order.getId() == orderId && order.getStatus().equals("submited")) {
                 userDao.changeStatusToPaid(orderId);
                 return;
             }
@@ -153,17 +161,26 @@ public class CustomerService  {
 
     }
 
-    public void changeStatuses() throws DAOException{
+    public void changeStatuses() throws DAOException {
         userDao.changeStatusesOfOrders();
     }
 
-    public Set<Product> getDeliveredProducts() throws DAOException{
+    public Set<Product> getDeliveredProducts() throws DAOException {
         Set<Product> products = userDao.getDeliveredProductsByUserName(customer.getName());
         return products;
     }
 
-    public void updateProductsRatings(Map<String, Integer> rates) throws DAOException{
+    public void updateProductsRatings(Map<String, Integer> rates) throws DAOException {
         productDao.updateRatings(rates);
+    }
+
+    public void setOrdersAsRated() {
+        try {
+            List<Order> orders = userDao.getOrdersByUserName(getCustomerName());
+            userDao.setOrdersAsRated(getCustomerName());
+        } catch (DAOException e) {
+
+        }
     }
 
 }

@@ -2,6 +2,8 @@ package com.codecool.onlineshop.models;
 
 import com.codecool.onlineshop.containers.Category;
 
+import java.util.Objects;
+
 public class Product {
     private int id;
     private String name;
@@ -43,6 +45,8 @@ public class Product {
         string.append(isAvailable);
         string.append(" category: ");
         string.append(category.getName());
+        string.append(" rate: ");
+        string.append(getRate());
 
         return string.toString();
     }
@@ -97,4 +101,16 @@ public class Product {
 
     public float getRate(){ return rate;}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(name, product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }

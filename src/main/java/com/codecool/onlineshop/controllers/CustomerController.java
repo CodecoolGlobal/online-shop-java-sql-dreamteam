@@ -310,17 +310,20 @@ public class CustomerController {
     private void rateProducts(){
         try{
             Set<Product> products = service.getDeliveredProducts();
-            Map<String , Integer> rates = new HashMap<>();
-            if(!products.isEmpty()){
-                for (Product product: products) {
-                    mainView.println("Type rate (1-5) for:  " + product.getName());
-                    int rate = mainView.getRateInput();
-                    rates.put(product.getName(), rate);
+            List<Order> orders = service.getUnratedAndDeliveredOrders();
+            Map<String, Integer> rates = new HashMap<>();
+            if(!orders.isEmpty()){
+                for (Order order: orders) {
+                    for (Product product: order.getBasket().getProducts()) {
+                        mainView.println("Type rate (1-5) for:  " + product.getName());
+                        int rate = mainView.getRateInput();
+                        rates.put(product.getName(), rate);
+                    }
+                    service.updateProductsRatings(rates);
+                    service.setOrdersAsRated();
+                    mainView.println("Thank you!");
                 }
-                service.updateProductsRatings(rates);
-                mainView.println("Thank you!");
             }
-
         }
         catch (DAOException e){
             mainView.println("something went wrong");

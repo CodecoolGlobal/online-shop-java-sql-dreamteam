@@ -28,4 +28,6 @@ public interface IUserDao {
     void changeStatusesOfOrders() throws DAOException;
 
     Set<Product> getDeliveredProductsByUserName(String userName) throws DAOException;
+
+    List<Order> getUnratedAndDeliveredOrdersByUserName(String userName) throws DAOException;
 }

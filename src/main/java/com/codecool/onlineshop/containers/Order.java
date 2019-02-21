@@ -15,14 +15,16 @@ public class Order {
     private boolean paid = false; // OrderStatus orderstatus?? - look: uml
     private Date orderPayAt;
     private String status;
+    private boolean rated;
 
-    public Order(int id, Basket basket, User user, Date orderCreatedAt, Date orderPayAt, String status){
+    public Order(int id, Basket basket, User user, Date orderCreatedAt, Date orderPayAt, String status, boolean rated){
         this.id = id;
         this.basket = basket;
         this.user = user;
         this.orderCreatedAt = orderCreatedAt;
         this.orderPayAt = orderPayAt;
         this.status = status;
+        this.rated = rated;
     }
 
     private void pay(){
@@ -80,6 +82,8 @@ public class Order {
     }
 
     public Basket getBasket() {return basket;}
+
+    public boolean getRated() {return rated;}
 
 
 }

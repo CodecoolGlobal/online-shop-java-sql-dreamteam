@@ -23,8 +23,8 @@ public class UserDaoStub extends UserDao {
         users.add(new Customer("patryk", "ma"));
         users.add(new Admin("kamil", "bed"));
 
-        orders.add(new Order(3, null, users.get(0), new Date(Long.valueOf("1549569037241")), null, "submitted"));
-        orders.add(new Order(4, null, users.get(0), new Date(Long.valueOf("1549577935108")), null, "submitted"));
+        orders.add(new Order(3, null, users.get(0), new Date(Long.valueOf("1549569037241")), null, "submitted", false));
+        orders.add(new Order(4, null, users.get(0), new Date(Long.valueOf("1549577935108")), null, "submitted", false));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class UserDaoStub extends UserDao {
                 currentUser = user;
             }
         }
-        orders.add(new Order(orders.get(orders.size()-1).getId() + 1, null, currentUser, created_at, null, status));
+        orders.add(new Order(orders.get(orders.size()-1).getId() + 1, null, currentUser, created_at, null, status, false));
     }
 
     @Override
