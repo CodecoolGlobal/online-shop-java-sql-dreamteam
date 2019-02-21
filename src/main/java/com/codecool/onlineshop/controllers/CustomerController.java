@@ -31,6 +31,7 @@ public class CustomerController {
         while (choice != 0) {
             mainView.printCustomerMenu();
             choice = mainView.getIntegerInput();
+            service.updateFeatured();
             switch (choice) {
                 case 1:
                     // Show basket

@@ -139,4 +139,12 @@ public class CustomerService  {
         throw new ServiceException("Product does not exists.");
 
     }
+
+    public void updateFeatured() {
+        try {
+            productDao.updateFeatured();
+        } catch (DAOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

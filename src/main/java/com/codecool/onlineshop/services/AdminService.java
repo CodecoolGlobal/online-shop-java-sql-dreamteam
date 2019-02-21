@@ -40,14 +40,20 @@ public class AdminService {
 
     public void addNewFeaturedCategory(String name, Date expirationDate){
         try {
-            productDao.getCategoryIdByName(name);
+            productDao.getFeaturedCategoryIdByName(name);
             System.out.println("There is already that category in database!");
-        } catch (DAOException e) {
+        } catch (DAOException b) {
             try {
-                productDao.addNewFeaturedCategory(name, expirationDate);
-                System.out.println("Category has been added.");
-            } catch (DAOException f) {
-                System.out.println("Something went wrong");
+                productDao.getCategoryIdByName(name);
+                System.out.println("There is already that category in database!");
+            } catch (DAOException e) {
+                try {
+                    productDao.addNewFeaturedCategory(name, expirationDate);
+                    System.out.println("Category has been added.");
+                } catch (DAOException f) {
+                    f.printStackTrace();
+                    System.out.println("Something went wrong");
+                }
             }
         }
     }
@@ -111,6 +117,7 @@ public class AdminService {
         try {
             return productDao.getAllProducts();
         } catch (DAOException e) {
+            e.printStackTrace();
             throw new ServiceException();
         }
     }
@@ -147,7 +154,7 @@ public class AdminService {
                 } else{ System.out.println("Product doesnt exist"); }
             } else{ System.out.println("Category doesnt exist");}
         } catch (Exception e){
-            e.printStackTrace();
+
         }
 
     }
@@ -187,6 +194,14 @@ public class AdminService {
         return orders;
     }
 
+
+    public void updateFeatured() {
+        try {
+            productDao.updateFeatured();
+        } catch (DAOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }
 

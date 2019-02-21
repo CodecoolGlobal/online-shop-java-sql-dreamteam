@@ -36,6 +36,7 @@ public class AdminController {
         while (choice != 0) {
             mainView.printAdminMenu();
             choice = mainView.getIntegerInput();
+            adminService.updateFeatured();
             switch (choice) {
                 case 1:
                     addNewCategory();
@@ -59,6 +60,7 @@ public class AdminController {
                 case 7:
                     //add new featured category
                     addNewFeaturedCategory();
+                    break;
                 case 8:
                     //feature a product
                     featureProduct();
@@ -88,10 +90,10 @@ public class AdminController {
         mainView.println("Please provide expiration date in the following format");
         mainView.println("[ yyyy-mm-dd ]");
         String strExpirationDate = mainView.getStringInput();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try{
             Date expirationDate = dateFormat.parse(strExpirationDate);
-            String strDate = dateFormat.format(strExpirationDate);
+            //String strDate = dateFormat.format(strExpirationDate);
             adminService.addNewFeaturedCategory(categoryName.toLowerCase(), expirationDate);
             mainView.getEmptyInput();
         }
@@ -191,7 +193,6 @@ public class AdminController {
 ;
         adminService.featureProduct(categoryName, productName);
         mainView.clearScreen();
-        mainView.println("Discount for the product has been set\n");
     }
 
     private void editProduct(){
