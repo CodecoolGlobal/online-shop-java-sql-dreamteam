@@ -1,9 +1,5 @@
 package com.codecool.onlineshop.controllers;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.daos.ProductDao;
@@ -13,6 +9,8 @@ import com.codecool.onlineshop.models.Product;
 import com.codecool.onlineshop.services.CustomerService;
 import com.codecool.onlineshop.services.ServiceException;
 import com.codecool.onlineshop.views.MainView;
+
+import java.util.*;
 
 public class CustomerController {
     private MainView mainView;
@@ -27,8 +25,11 @@ public class CustomerController {
 
     public void run() {
         mainView.clearScreen();
+        changeStatusesOfOrders();
+        rateProducts();
         int choice = -1;
         while (choice != 0) {
+            changeStatusesOfOrders();
             mainView.printCustomerMenu();
             choice = mainView.getIntegerInput();
             service.updateFeatured();
@@ -70,6 +71,11 @@ public class CustomerController {
                     // Check product availability
                     checkIfProductExists();
                     break;
+
+                case 10:
+                    // pay for order
+                    payForOrder();
+                    break;
                 case 0:
                     choice = 0;
                     break;
@@ -79,6 +85,23 @@ public class CustomerController {
             }
         }
     }
+
+
+
+    private void payForOrder(){
+        showPreviousOrders();
+        mainView.println("Which order you want to pay?");
+        int orderId = mainView.getIntegerInput();
+        try{
+            service.payForOrder(orderId);
+            mainView.println("Order has been paid.");
+        }
+        catch (DAOException | ServiceException e){
+            mainView.println(e.getMessage());
+        }
+
+    }
+
 
     private void checkIfProductExists() {
         mainView.println("Find product availability\nEnter product name:");
@@ -127,10 +150,29 @@ public class CustomerController {
         }
     }
 
+
+    private void showUnpaidOrders(){
+        try {
+            List<Order> orders = service.getCustomerOrders();
+            mainView.println("------------------");
+            mainView.println("Your orders:");
+            for (int i = 0; i < orders.size(); i++){
+                if(orders.get(i).getStatus().equals("submited")){
+                mainView.print(i + ". ");
+                mainView.println(orders.get(i).toString());
+            }
+        }}
+            catch (DAOException e) {
+            mainView.println("You have paid for all of your orders.");
+        }
+    }
+
+
+
     private void placeOrder() {
         try {
             service.placeAnOrder();
-        } catch (DAOException e) {
+        } catch (DAOException | ServiceException e) {
             mainView.println("Cannot place an order");
         }
     }
@@ -256,4 +298,37 @@ public class CustomerController {
             i++;
         }
     }
+
+    private void changeStatusesOfOrders(){
+        try{
+            service.changeStatuses();
+        }
+        catch (DAOException e){
+            mainView.println("Statuses cannot be changed");
+        }
+    }
+
+    private void rateProducts(){
+        try{
+            Set<Product> products = service.getDeliveredProducts();
+            List<Order> orders = service.getUnratedAndDeliveredOrders();
+            Map<String, Integer> rates = new HashMap<>();
+            if(!orders.isEmpty()){
+                for (Order order: orders) {
+                    for (Product product: order.getBasket().getProducts()) {
+                        mainView.println("Type rate (1-5) for:  " + product.getName());
+                        int rate = mainView.getRateInput();
+                        rates.put(product.getName(), rate);
+                    }
+                    service.updateProductsRatings(rates);
+                    service.setOrdersAsRated();
+                    mainView.println("Thank you!");
+                }
+            }
+        }
+        catch (DAOException e){
+            mainView.println("something went wrong");
+        }
+    }
+
 }

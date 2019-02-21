@@ -37,6 +37,10 @@ public class Category {
         return list;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String categoryToString(){
         StringBuilder string = new StringBuilder();
         string.append("id: ");

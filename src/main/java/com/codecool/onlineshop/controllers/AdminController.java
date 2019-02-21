@@ -1,11 +1,12 @@
 package com.codecool.onlineshop.controllers;
 
+import com.codecool.onlineshop.containers.Order;
+import com.codecool.onlineshop.daos.DAOException;
 import com.codecool.onlineshop.daos.ProductDao;
 import com.codecool.onlineshop.daos.UserDao;
-import com.codecool.onlineshop.services.ServiceException;
-import com.codecool.onlineshop.views.MainView;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.services.AdminService;
+
 import com.codecool.onlineshop.containers.*;
 import com.sun.xml.internal.bind.v2.TODO;
 
@@ -13,8 +14,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+
+import com.codecool.onlineshop.services.ServiceException;
+import com.codecool.onlineshop.views.MainView;
+
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdminController {
     private MainView mainView;
@@ -34,6 +40,7 @@ public class AdminController {
         mainView.clearScreen();
         int choice = -1;
         while (choice != 0) {
+            changeStatusesOfOrders();
             mainView.printAdminMenu();
             choice = mainView.getIntegerInput();
             adminService.updateFeatured();
@@ -55,7 +62,7 @@ public class AdminController {
                     deactivateProduct();
                     break;
                 case 6:
-                    getAllOrders();
+                    showAllOrders();
                     break;
                 case 7:
                     //add new featured category
@@ -227,10 +234,25 @@ public class AdminController {
         }
     }
 
-    private void getAllOrders(){
-        List<Order> orders = adminService.getAllOrders();
-        mainView.printAllOrders(orders);
+    private void showAllOrders() {
+            List<Order> orders = adminService.getAllOrders();
+            mainView.println("------------------");
+            for (int i = 0; i < orders.size(); i++){
+                mainView.print(i + ". ");
+                mainView.println(orders.get(i).toString());
+            }
     }
+
+    private void changeStatusesOfOrders(){
+        try{
+            adminService.changeStatuses();
+        }
+        catch (DAOException e){
+            mainView.println("Statuses cannot be changed");
+        }
+    }
+
+
 
 
 }

@@ -1,10 +1,10 @@
 package com.codecool.onlineshop.views;
 
+import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.models.Product;
 
-import java.util.Scanner;
 import java.util.List;
-import com.codecool.onlineshop.containers.*;
+import java.util.Scanner;
 
 public class MainView {
     protected Scanner scanner = new Scanner(System.in);
@@ -26,7 +26,7 @@ public class MainView {
         println("\n(1) Show basket \n" + "(2) Add product to basket \n" + "(3) Edit product quantity \n" +
                 "(4) Remove a product \n" + "(5) Place an order \n" + "(6) See my previous orders \n" +
                 "(7) List available products \n" + "(8) List category-based products \n" +
-                "(9) Check product availability \n" + "(0) Exit \n");
+                "(9) Check product availability \n" + "(10) Pay for order \n" +  "(0) Exit \n");
 
     }
 
@@ -100,10 +100,20 @@ public class MainView {
 
 
     public void printStringTable(List<String> list) {
-        for (String item : list) {
-            System.out.println(item);
+        for (int i = 0; i < list.size() ; i++) {
+            System.out.println("(" + (i+1) + ") " + list.get(i));
         }
     }
+
+    public int getRateInput() {
+        String rate = scanner.nextLine();
+        while(!rate.matches("[12345]")){
+            println("Wrong number. Scale is 1-5");
+            rate = scanner.nextLine();
+        }
+        return Integer.parseInt(rate);
+    }
+
 
 
     public int getIntegerInputInParition(int range) {

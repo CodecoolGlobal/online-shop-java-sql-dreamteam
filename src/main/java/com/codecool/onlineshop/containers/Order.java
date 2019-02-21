@@ -1,5 +1,6 @@
 package com.codecool.onlineshop.containers;
 
+import com.codecool.onlineshop.models.Product;
 import com.codecool.onlineshop.models.User;
 
 import java.text.DateFormat;
@@ -14,14 +15,16 @@ public class Order {
     private boolean paid = false; // OrderStatus orderstatus?? - look: uml
     private Date orderPayAt;
     private String status;
+    private boolean rated;
 
-    public Order(int id, Basket basket, User user, Date orderCreatedAt, Date orderPayAt, String status){
+    public Order(int id, Basket basket, User user, Date orderCreatedAt, Date orderPayAt, String status, boolean rated){
         this.id = id;
         this.basket = basket;
         this.user = user;
         this.orderCreatedAt = orderCreatedAt;
         this.orderPayAt = orderPayAt;
         this.status = status;
+        this.rated = rated;
     }
 
     private void pay(){
@@ -47,6 +50,9 @@ public class Order {
         if (orderPayAt != null) {
             sb.append(", paid At: ");
             sb.append(df.format(orderPayAt));
+        }
+        for (Product product: getBasket().getProducts()) {
+            sb.append("\n\t" + product.getName() + " " + product.getAmount() + " " + product.getPrice());
         }
         return sb.toString();
     }
@@ -74,6 +80,10 @@ public class Order {
     public String getStatus(){
         return status;
     }
+
+    public Basket getBasket() {return basket;}
+
+    public boolean getRated() {return rated;}
 
 
 }

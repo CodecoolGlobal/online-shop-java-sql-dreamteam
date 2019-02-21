@@ -14,7 +14,7 @@ public class ProductDaoStub extends ProductDao{
     List<Category> categories = new ArrayList<>();
     List<FeaturedCategory> featuredCategories = new ArrayList<>();
 
-    ProductDaoStub() {
+    public ProductDaoStub() {
         populateListsWithData();
     }
 
@@ -31,12 +31,12 @@ public class ProductDaoStub extends ProductDao{
         categories.add(humans);
 
 
-        Product p1 = new Product(2, "apple", 3.0, 20, true, fruits);
-        Product p2 = new Product(3, "orange", 4.0, 10, true, fruits);
-        Product p3 = new Product(4, "milk", 2.0, 20, false, diary);
-        Product p4 = new Product(5, "toedit", 40.0, 10, true, fruits);
-        Product p5 = new Product(6, "banana", 3.0, 20, false, fruits);
-        Product p6 = new Product(7, "kamil", 1.0, 175, true, humans);
+        Product p1 = new Product(2, "apple", 3.0, 20, true, fruits, 0);
+        Product p2 = new Product(3, "orange", 4.0, 10, true, fruits, 0);
+        Product p3 = new Product(4, "milk", 2.0, 20, false, diary, 0);
+        Product p4 = new Product(5, "toedit", 40.0, 10, true, fruits, 0);
+        Product p5 = new Product(6, "banana", 3.0, 20, false, fruits, 0);
+        Product p6 = new Product(7, "kamil", 1.0, 175, true, humans, 0);
         products.add(p1);
         products.add(p2);
         products.add(p3);
@@ -116,9 +116,9 @@ public class ProductDaoStub extends ProductDao{
 
     @Override
     public void updateCategoryName(String oldName, String newName) throws DAOException {
-        for (Product product : products) {
-            if (product.getName().equals(oldName)) {
-                product.setName(newName);
+        for (Category category : categories) {
+            if (category.getName().equals(oldName)) {
+                category.setName(newName);
                 break;
             }
         }
@@ -132,7 +132,7 @@ public class ProductDaoStub extends ProductDao{
                 Double.valueOf(newProductData.get(1)),
                 Integer.valueOf(newProductData.get(2)),
                 Boolean.valueOf(newProductData.get(3)),
-                getCategoryById(categoryId)));
+                getCategoryById(categoryId), 0));
     }
 
     @Override
