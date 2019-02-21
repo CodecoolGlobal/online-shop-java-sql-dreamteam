@@ -23,7 +23,7 @@ public class MainView {
     }
 
     public void printCustomerMenu() {
-        println("(1) Show basket \n" + "(2) Add product to basket \n" + "(3) Edit product quantity \n" +
+        println("\n(1) Show basket \n" + "(2) Add product to basket \n" + "(3) Edit product quantity \n" +
                 "(4) Remove a product \n" + "(5) Place an order \n" + "(6) See my previous orders \n" +
                 "(7) List available products \n" + "(8) List category-based products \n" +
                 "(9) Check product availability \n" + "(10) Pay for order \n" +  "(0) Exit \n");
@@ -31,9 +31,9 @@ public class MainView {
     }
 
     public void printAdminMenu() {
-        println("(1) Create a new category \n" + "(2) Edit category name \n" + "(3) Add new product \n" +
+        println("\n(1) Create a new category \n" + "(2) Edit category name \n" + "(3) Add new product \n" +
                 "(4) Edit a product \n" + "(5) Deactivate a product \n" + "(6) Show all orders \n" +
-                "(7) Set a discount" + "(0) Exit \n");
+                "(7) Add featured category\n" + "(8) Feature a product\n" + "(0) Exit \n");
     }
 
     public int getIntegerInput() {

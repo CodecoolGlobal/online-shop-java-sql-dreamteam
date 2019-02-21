@@ -149,6 +149,15 @@ public class CustomerService {
 
     }
 
+
+    public void updateFeatured() {
+        try {
+            productDao.updateFeatured();
+        } catch (DAOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void payForOrder(int orderId) throws DAOException, ServiceException {
         List<Order> orders = getCustomerOrders();
         for (Order order : orders) {

@@ -32,6 +32,7 @@ public class CustomerController {
             changeStatusesOfOrders();
             mainView.printCustomerMenu();
             choice = mainView.getIntegerInput();
+            service.updateFeatured();
             switch (choice) {
                 case 1:
                     // Show basket

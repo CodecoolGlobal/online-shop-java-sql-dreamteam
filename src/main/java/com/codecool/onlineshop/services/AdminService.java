@@ -8,6 +8,7 @@ import com.codecool.onlineshop.models.Product;
 import com.codecool.onlineshop.models.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AdminService {
@@ -33,6 +34,26 @@ public class AdminService {
                 System.out.println("Category has been added.");
             } catch (DAOException f) {
                 System.out.println("Something went wrong");
+            }
+        }
+    }
+
+    public void addNewFeaturedCategory(String name, Date expirationDate){
+        try {
+            productDao.getFeaturedCategoryIdByName(name);
+            System.out.println("There is already that category in database!");
+        } catch (DAOException b) {
+            try {
+                productDao.getCategoryIdByName(name);
+                System.out.println("There is already that category in database!");
+            } catch (DAOException e) {
+                try {
+                    productDao.addNewFeaturedCategory(name, expirationDate);
+                    System.out.println("Category has been added.");
+                } catch (DAOException f) {
+                    f.printStackTrace();
+                    System.out.println("Something went wrong");
+                }
             }
         }
     }
@@ -73,7 +94,16 @@ public class AdminService {
         return categoryNames;
     }
 
-
+    public List<String> getFeaturedCategoryNames() {
+        List<String> names = new ArrayList<>();
+        try{
+            names = productDao.getAllFeaturedCategoryNames();
+            return names;
+        } catch (Exception e){
+            System.out.println("Something went wrong!");
+        }
+        return names;
+    }
     public void deactivateProduct(String name) {
         try {
             productDao.deactivateProduct(name);
@@ -87,6 +117,7 @@ public class AdminService {
         try {
             return productDao.getAllProducts();
         } catch (DAOException e) {
+            e.printStackTrace();
             throw new ServiceException();
         }
     }
@@ -112,6 +143,21 @@ public class AdminService {
         }
     }
 
+    public void featureProduct(String categoryName, String productName){
+
+        try{
+            if (productDao.getFeaturedCategoryIdByName(categoryName) != null ) {
+                if (productDao.getProductByName(productName) != null){
+
+                    productDao.featureProduct(productDao.getFeaturedCategoryIdByName(categoryName), productName);
+                    System.out.println("Product has been featured!");
+                } else{ System.out.println("Product doesnt exist"); }
+            } else{ System.out.println("Category doesnt exist");}
+        } catch (Exception e){
+
+        }
+
+    }
     public void editProductName(String productName, String newName){
         try {
                 productDao.updateProductName(productName, newName);
@@ -152,6 +198,14 @@ public class AdminService {
         userDao.changeStatusesOfOrders();
     }
 
+
+    public void updateFeatured() {
+        try {
+            productDao.updateFeatured();
+        } catch (DAOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }
 

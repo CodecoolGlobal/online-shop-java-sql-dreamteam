@@ -7,10 +7,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+
+import com.codecool.onlineshop.containers.Category;
+import com.codecool.onlineshop.containers.FeaturedCategory;
+import com.codecool.onlineshop.models.Product;
+
 
 public class ProductDao implements IProductDao {
 
@@ -23,12 +32,13 @@ public class ProductDao implements IProductDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        
+
+
     }
 
     private void createTables() throws DAOException {
         String productQuery = "CREATE TABLE IF NOT EXISTS Products("
+
                             + "id INTEGER PRIMARY KEY, "
                             + "name TEXT NOT NULL, "
                             + "price REAL NOT NULL, "
@@ -41,15 +51,16 @@ public class ProductDao implements IProductDao {
                             + "featured_category_id INTEGER NOT NULL)";
 
         String categoryQuery = "CREATE TABLE IF NOT EXISTS Category("
-                            + "id INTEGER PRIMARY KEY, "
-                            + "name TEXT NOT NULL, "
-                            + "available TEXT DEFAULT 'true')";
+                + "id INTEGER PRIMARY KEY, "
+                + "name TEXT NOT NULL, "
+                + "available TEXT DEFAULT 'true')";
 
         String featuredQuery = "CREATE TABLE IF NOT EXISTS FeaturedCategory("
-                            + "id INTEGER PRIMARY KEY, "
-                            + "name TEXT NOT NULL, "
-                            + "available TEXT DEFAULT 'true', "
-                            + "expiration_date DATE NOT NULL)";
+                + "id INTEGER PRIMARY KEY, "
+                + "name TEXT NOT NULL, "
+                + "available TEXT DEFAULT 'true', "
+                + "expiration_date DATE NOT NULL, "
+                + "percent INTEGER DEFAULT 80)";
 
         // String insertCategory = "INSERT INTO Category(name) VALUES('Fruits');"
         //                         + "INSERT INTO Category(name) VALUES('Diary');";
@@ -66,24 +77,24 @@ public class ProductDao implements IProductDao {
             throw new DAOException("Cannot create tables");
         }
     }
-    
+
     public boolean checkIfAvailable(String productName) throws DAOException {
         return false;
     }
 
-    public boolean checkIfAvailableProduct(String productName) throws DAOException{
+    public boolean checkIfAvailableProduct(String productName) throws DAOException {
         productName.toLowerCase();
         List<Product> products = getAllProducts();
         for (Product product : products) {
-            if(product.getName().equals(productName)){
+            if (product.getName().equals(productName)) {
                 return false;
             }
         }
         return true;
     }
 
-    
-    public List<Product> getAllProducts() throws DAOException{
+
+    public List<Product> getAllProducts() throws DAOException {
         String productsQuery = "SELECT * FROM Products;";
         Statement statement = null;
         ResultSet results = null;
@@ -91,9 +102,9 @@ public class ProductDao implements IProductDao {
             databaseConnector.connectToDatabase();
             statement = databaseConnector.c.createStatement();
             results = statement.executeQuery(productsQuery);
-            
+
             List<Product> products = new ArrayList<>();
-            while(results.next()){
+            while (results.next()) {
                 Product product = createProduct(results);
                 products.add(product);
             }
@@ -118,7 +129,7 @@ public class ProductDao implements IProductDao {
         }
     }
 
-    public List<String> getAllCategoryNames() throws DAOException{
+    public List<String> getAllCategoryNames() throws DAOException {
         String productsQuery = "SELECT name FROM Category;";
         Statement statement = null;
         ResultSet results = null;
@@ -126,9 +137,9 @@ public class ProductDao implements IProductDao {
             databaseConnector.connectToDatabase();
             statement = databaseConnector.c.createStatement();
             results = statement.executeQuery(productsQuery);
-            
+
             List<String> categoryNames = new ArrayList<>();
-            while(results.next()){
+            while (results.next()) {
                 String name = results.getString("name");
                 categoryNames.add((name));
             }
@@ -153,19 +164,131 @@ public class ProductDao implements IProductDao {
         }
     }
 
+    public List<String> getAllFeaturedCategoryNames() throws DAOException {
+        String productsQuery = "SELECT name FROM FeaturedCategory;";
+        Statement statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.createStatement();
+            results = statement.executeQuery(productsQuery);
+
+            List<String> categoryNames = new ArrayList<>();
+            while (results.next()) {
+                String name = results.getString("name");
+                categoryNames.add((name));
+            }
+            return categoryNames;
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+
+    }
+
 
     public List<Product> getAvailableProducts() throws DAOException {
         List<Product> products = getAllProducts();
         List<Product> availableProducts = products.stream()
-            .filter(p -> p.isAvailable())
-            .collect(Collectors.toList());
+                .filter(p -> p.isAvailable())
+                .collect(Collectors.toList());
 
         return availableProducts;
     }
 
-    public Integer getCategoryIdByName(String name) throws DAOException {
-        String productsQuery = "SELECT * FROM Category WHERE name = ?;";
-        PreparedStatement  statement = null;
+    public Category getCategoryById(int id) throws DAOException {
+        String productsQuery = "SELECT * FROM Category WHERE id = ?;";
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(productsQuery);
+            statement.setInt(1, id);
+            results = statement.executeQuery();
+            results.next();
+            Category category = new Category(id,
+                    results.getString("name"),
+                    Boolean.getBoolean(results.getString("available")));
+
+            return category;
+
+        } catch (SQLException e) {
+            throw new DAOException("Problem occured during querying category ID");
+        } catch (Exception e) {
+            throw new DAOException("Problem occured during querying category ID");
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
+    public FeaturedCategory getFeaturedCategoryById(int id) throws DAOException {
+        String productsQuery = "SELECT * FROM FeaturedCategory WHERE id = ?;";
+        PreparedStatement statement = null;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(productsQuery);
+            statement.setInt(1, id);
+            results = statement.executeQuery();
+            FeaturedCategory featuredCategory = null;
+            if (results.next()) {
+                featuredCategory = new FeaturedCategory(
+                        results.getString("name"),
+                        dateFormat.parse(results.getString("expiration_date")),
+                        Boolean.getBoolean(results.getString("available")),
+                        results.getInt("percent"),
+                        id);
+            }
+
+            return featuredCategory;
+
+        } catch (SQLException e) {
+            throw new DAOException("Problem occured during querying category ID");
+        } catch (Exception e) {
+            throw new DAOException("Problem occured during querying category ID");
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
+    public Integer getFeaturedCategoryIdByName(String name) throws DAOException {
+        String productsQuery = "SELECT * FROM FeaturedCategory WHERE name = ?;";
+        PreparedStatement statement = null;
         ResultSet results = null;
         try {
             databaseConnector.connectToDatabase();
@@ -195,26 +318,55 @@ public class ProductDao implements IProductDao {
         }
     }
 
-    public Category getCategoryById(int id) throws DAOException {
-        String productsQuery = "SELECT * FROM Category WHERE id = ?;";
-        PreparedStatement  statement = null;
+    public Integer getCategoryIdByName(String name) throws DAOException {
+        String productsQuery = "SELECT * FROM Category WHERE name = ?;";
+        PreparedStatement statement = null;
         ResultSet results = null;
         try {
             databaseConnector.connectToDatabase();
             statement = databaseConnector.c.prepareStatement(productsQuery);
-            statement.setInt(1, id);
+            statement.setString(1, name);
             results = statement.executeQuery();
             results.next();
-            Category category = new Category(id,
-                    results.getString("name"),
-                    Boolean.getBoolean(results.getString("available")));
-
-            return category;
-            
+            Integer id = results.getInt("id");
+            if (id.intValue() == 0) {
+                throw new DAOException("Cannot find category ID of such category name");
+            }
+            return id;
         } catch (SQLException e) {
             throw new DAOException("Problem occured during querying category ID");
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
+    public Product getProductByName(String name) throws DAOException {
+        String productsQuery = "SELECT * FROM Products WHERE name = ?;";
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(productsQuery);
+            statement.setString(1, name);
+            results = statement.executeQuery();
+            results.next();
+            Product product = createProduct(results);
+            return product;
+
+        } catch (SQLException e) {
+            throw new DAOException("message");
         } catch (Exception e) {
-            throw new DAOException("Problem occured during querying category ID");
+            throw new DAOException("message");
         } finally {
             try {
                 if (results != null) {
@@ -232,7 +384,7 @@ public class ProductDao implements IProductDao {
 
     public Product getProductById(int id) throws DAOException {
         String productsQuery = "SELECT * FROM Products WHERE id = ?;";
-        PreparedStatement  statement = null;
+        PreparedStatement statement = null;
         ResultSet results = null;
         try {
             databaseConnector.connectToDatabase();
@@ -265,7 +417,7 @@ public class ProductDao implements IProductDao {
     public void updateCategoryName(String oldName, String newName) throws DAOException {
         String query = "UPDATE Category SET name = ? WHERE name = ?";
         PreparedStatement statement = null;
-        try {  
+        try {
             databaseConnector.connectToDatabase();
             statement = databaseConnector.c.prepareStatement(query);
             statement.setString(1, newName);
@@ -374,8 +526,10 @@ public class ProductDao implements IProductDao {
     }
 
     public void addNewProduct(List<String> newProductData, int categoryId) throws DAOException {
+
         String query = "INSERT INTO Products(name, price, amount, available, category_id, featured_category_id, number_of_rates, sum_of_rates, rate) "
                         + "VALUES (?, ?, ?, ?, ?, 0, 0, 0, 0)";
+
         PreparedStatement statement = null;
         try {
             databaseConnector.connectToDatabase();
@@ -388,10 +542,8 @@ public class ProductDao implements IProductDao {
             statement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DAOException("message");
         } catch (Exception e) {
-            e.printStackTrace();
             throw new DAOException("message");
         } finally {
             try {
@@ -429,10 +581,37 @@ public class ProductDao implements IProductDao {
         }
     }
 
+    public void addNewFeaturedCategory(String name, Date expirationDate) throws DAOException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        String strDate = dateFormat.format(expirationDate);
+        String query = "INSERT INTO FeaturedCategory(name, expiration_date) VALUES (?, ?)";
+        PreparedStatement statement = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
+            statement.setString(1, name);
+            statement.setString(2, strDate);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("Error: probably a null pointer lul");
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
     public void editProduct(int productID, List<String> edit, int categoryId) throws DAOException {
         String query = "UPDATE Products SET name = ?, price = ?, amount = ?, available = ?, category_id = ? WHERE id = ?";
         PreparedStatement statement = null;
-        try {  
+        try {
             databaseConnector.connectToDatabase();
             statement = databaseConnector.c.prepareStatement(query);
             statement.setString(1, edit.get(0));
@@ -476,7 +655,8 @@ public class ProductDao implements IProductDao {
             throw new DAOException("message");
         } catch (Exception e) {
             throw new DAOException("message");
-        } try {
+        }
+        try {
             if (statement != null) {
                 statement.close();
             }
@@ -499,7 +679,8 @@ public class ProductDao implements IProductDao {
             throw new DAOException("message");
         } catch (Exception e) {
             throw new DAOException("message");
-        } try {
+        }
+        try {
             if (statement != null) {
                 statement.close();
             }
@@ -510,21 +691,48 @@ public class ProductDao implements IProductDao {
     }
 
     public void addProductToDiscount(String discount, String productName) {
-        
+        String productsQuery = "";
+        PreparedStatement statement = null;
+
     }
 
-    private List<Product> getProductsByCategory(int categoryId) throws DAOException {
-        String productsQuery = "SELECT * FROM Category JOIN Products ON Category.id = Products.category_id "
-                                + "WHERE Category.id = ?";
+    public void featureProduct(int categoryId, String productName) throws DAOException {
+        String query = "UPDATE Products SET featured_category_id = ? WHERE Products.name = ?";
         PreparedStatement statement = null;
         ResultSet results = null;
         try {
             databaseConnector.connectToDatabase();
-            statement = databaseConnector.c.prepareStatement(productsQuery);   
+            statement = databaseConnector.c.prepareStatement(query);
+            statement.setInt(1, categoryId);
+            statement.setString(2, productName);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DAOException("message");
+        } catch (Exception e) {
+            throw new DAOException("message");
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+            }
+        }
+    }
+
+    private List<Product> getProductsByCategory(int categoryId) throws DAOException {
+        String productsQuery = "SELECT * FROM Category JOIN Products ON Category.id = Products.category_id "
+                + "WHERE Category.id = ?";
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(productsQuery);
             statement.setInt(1, categoryId);
             results = statement.executeQuery();
             List<Product> products = new ArrayList<>();
-            while(results.next()){
+            while (results.next()) {
                 Product product = createProduct(results);
                 products.add(product);
             }
@@ -548,15 +756,78 @@ public class ProductDao implements IProductDao {
         }
     }
 
+    public void updateFeatured() throws DAOException {
+        String query = "select FeaturedCategory.id AS f_id, Products.id AS p_id, FeaturedCategory.expiration_date from FeaturedCategory join Products ON Products.featured_category_id = FeaturedCategory.id; ";
+        //expiration date
+        //product id
+        String updateQuery = "UPDATE Products SET featured_category_id = 0 WHERE id = ?";
+        PreparedStatement statement = null;
+        PreparedStatement productStatement = null;
+        ResultSet results = null;
+
+        try {
+            databaseConnector.connectToDatabase();
+            statement = databaseConnector.c.prepareStatement(query);
+            productStatement = databaseConnector.c.prepareStatement(updateQuery);
+            results = statement.executeQuery();
+            while (results.next()) {
+                String strDate = results.getString("expiration_date");
+                //"2019-00-30 12:00:00""
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = dateFormat.parse(strDate);
+                Date localDate = new Date();
+                if (localDate.before(date)) {
+                    productStatement.setInt(1, results.getInt("p_id"));
+                    productStatement.executeUpdate();
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException("Problem occured during querying FeaturedCategory");
+        } catch (Exception e) {
+            throw new DAOException("Problem occured during querying FeaturedCategory");
+        } finally {
+            try {
+                if (results != null) {
+                    results.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                databaseConnector.getConnection().close();
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
     private Product createProduct(ResultSet results) throws Exception {
         Category category = getCategoryById(results.getInt("category_id"));
-        Product product = new Product(results.getInt("id"),
-                results.getString("name"),
-                results.getDouble("price"),
-                results.getInt("amount"),
-                Boolean.valueOf(results.getString("available")),
-                category,
-                results.getFloat("rate"));
+        Product product = null;
+        FeaturedCategory featuredCategory = null;
+        try {
+            featuredCategory = getFeaturedCategoryById(results.getInt("featured_category_id"));
+        } catch (Exception e){
+
+        }
+        if (featuredCategory == null) {
+            product = new Product(results.getInt("id"),
+                    results.getString("name"),
+                    results.getDouble("price"),
+                    results.getInt("amount"),
+                    Boolean.valueOf(results.getString("available")),
+                    category,
+                    results.getFloat("rate"));
+        } else {
+            product = new Product(results.getInt("id"),
+                    results.getString("name"),
+                    (results.getDouble("price") * featuredCategory.getPercent()) / 100,
+                    results.getInt("amount"),
+                    Boolean.valueOf(results.getString("available")),
+                    featuredCategory,
+                    results.getFloat("rate"));
+        }
+
         return product;
     }
 
