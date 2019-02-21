@@ -670,8 +670,6 @@ public class ProductDao implements IProductDao {
     }
 
     public void featureProduct(int categoryId, String productName) throws DAOException {
-        //TODO
-        // dodaj produkt do kategorii(zmienic featured category na category ID)
         String query = "UPDATE Products SET featured_category = '?' WHERE name = ?";
         PreparedStatement statement = null;
         ResultSet results = null;
@@ -733,7 +731,6 @@ public class ProductDao implements IProductDao {
     }
 
     private Product createProduct(ResultSet results) throws Exception {
-        //TODO check usage
         Category category = getCategoryById(results.getInt("category_id"));
         Product product = new Product(results.getInt("id"),
                 results.getString("name"),
