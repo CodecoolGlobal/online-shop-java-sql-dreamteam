@@ -107,41 +107,6 @@ public class UserDao implements IUserDao {
     }
 
 
-//    @Override
-//    public List<Order> getAllOrders() throws DAOException {
-//        List<Order> orders = new ArrayList<Order>();
-//        Statement stmt = null;
-//        try {
-//            databaseConnector.connectToDatabase();
-//            databaseConnector.getConnection().setAutoCommit(false);
-//            stmt = databaseConnector.getConnection().createStatement();
-//            ResultSet rs = stmt.executeQuery("SELECT ORDERS.ID, STATUS, CREATED_AT, PAID_AT, LOGIN, PASSWORD, RATE FROM ORDERS  LEFT JOIN USERS ON ORDERS.USER_LOGIN = USERS.LOGIN");
-//
-//            while (rs.next()){
-//                Integer id = rs.getInt("ID");
-//                String login = rs.getString("login");
-//                String password = rs.getString("password");
-//                Date created_at = new Date(Long.valueOf(rs.getString("created_at")));
-//                Date paid_at = null;
-//                boolean rate = Boolean.valueOf(rs.getString("rate"));
-//                if (rs.getString("paid_at") != null) {
-//                    paid_at = new Date(Long.valueOf(rs.getString("paid_at")));
-//                }
-//                String status = rs.getString("status");
-//                User user = new User(login, password);
-//                Order order = new Order(id, null, user, created_at, paid_at, status, rate);
-//                orders.add(order);
-//            }
-//            rs.close();
-//            stmt.close();
-//            databaseConnector.getConnection().close();
-//            return orders;
-//        } catch (SQLException e) {
-//            throw new DAOException("Something went wrong.");
-//        }
-//    }
-
-
 
     @Override
     public List<Order> getOrdersByUserName(String userName) throws DAOException{
@@ -363,9 +328,6 @@ public class UserDao implements IUserDao {
             throw new DAOException("Couldnt update order rates! ");
         }
     }
-
-
-
 
 
     @Override
