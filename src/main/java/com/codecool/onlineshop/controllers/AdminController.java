@@ -51,7 +51,7 @@ public class AdminController {
                     deactivateProduct();
                     break;
                 case 6:
-                    getAllOrders();
+                    showAllOrders();
                     break;
                 case 7:
                     //set a discount
@@ -182,9 +182,13 @@ public class AdminController {
         }
     }
 
-    private void getAllOrders(){
-        List<Order> orders = adminService.getAllOrders();
-        mainView.printAllOrders(orders);
+    private void showAllOrders() {
+            List<Order> orders = adminService.getAllOrders();
+            mainView.println("------------------");
+            for (int i = 0; i < orders.size(); i++){
+                mainView.print(i + ". ");
+                mainView.println(orders.get(i).toString());
+            }
     }
 
     private void changeStatusesOfOrders(){
