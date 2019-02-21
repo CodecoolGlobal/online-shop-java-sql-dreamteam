@@ -65,4 +65,14 @@ class AdminServiceTest {
         }
 
     }
+
+    @Test
+    void DoNotAddCatagoryIfCategoryOfThatNameExists() {
+        adminService.addNewCategory("fruits");
+        try {
+            assertEquals(1, productDao.getAllCategoryNames().stream().filter(s -> s.equals("fruits")).count());
+        } catch (DAOException e) {
+            //wont happen
+        }
+    }
 }
