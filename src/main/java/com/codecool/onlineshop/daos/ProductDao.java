@@ -1,6 +1,7 @@
 package com.codecool.onlineshop.daos;
 
 import com.codecool.onlineshop.containers.Category;
+import com.codecool.onlineshop.containers.FeaturedCategory;
 import com.codecool.onlineshop.models.Product;
 
 import java.sql.PreparedStatement;
@@ -14,11 +15,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-
-import com.codecool.onlineshop.containers.Category;
-import com.codecool.onlineshop.containers.FeaturedCategory;
-import com.codecool.onlineshop.models.Product;
 
 
 public class ProductDao implements IProductDao {
@@ -776,7 +772,7 @@ public class ProductDao implements IProductDao {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date date = dateFormat.parse(strDate);
                 Date localDate = new Date();
-                if (localDate.before(date)) {
+                if (localDate.after(date)) {
                     productStatement.setInt(1, results.getInt("p_id"));
                     productStatement.executeUpdate();
                 }

@@ -6,20 +6,14 @@ import com.codecool.onlineshop.daos.ProductDao;
 import com.codecool.onlineshop.daos.UserDao;
 import com.codecool.onlineshop.models.User;
 import com.codecool.onlineshop.services.AdminService;
-
-import com.codecool.onlineshop.containers.*;
-import com.sun.xml.internal.bind.v2.TODO;
+import com.codecool.onlineshop.services.ServiceException;
+import com.codecool.onlineshop.views.MainView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import com.codecool.onlineshop.services.ServiceException;
-import com.codecool.onlineshop.views.MainView;
-
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AdminController {
