@@ -1,14 +1,14 @@
 package com.codecool.onlineshop.services;
 
-import com.codecool.onlineshop.models.*;
+import com.codecool.onlineshop.containers.Order;
+import com.codecool.onlineshop.daos.DAOException;
+import com.codecool.onlineshop.daos.ProductDao;
+import com.codecool.onlineshop.daos.UserDao;
+import com.codecool.onlineshop.models.Product;
+import com.codecool.onlineshop.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.codecool.onlineshop.containers.*;
-import com.codecool.onlineshop.daos.DAOException;
-import com.codecool.onlineshop.daos.*;
-import com.codecool.onlineshop.services.*;
 
 public class AdminService {
     User admin;
@@ -146,6 +146,10 @@ public class AdminService {
             System.out.println("Something went wrong. ");
         }
         return orders;
+    }
+
+    public void changeStatuses() throws DAOException{
+        userDao.changeStatusesOfOrders();
     }
 
 

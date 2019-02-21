@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BasketIteratorTest {
-    private Product product = new Product(1, "mama", 1, 1, true, new Category("dirt"));
+    private Product product = new Product(1, "mama", 1, 1, true, new Category("dirt"), 3);
     private List<Product> listOfProducts = new ArrayList<>();
 
     @Test
