@@ -354,7 +354,9 @@ public class ProductDao implements IProductDao {
             statement.setInt(1, newQuantity);
             statement.setString(2, oldName);
             statement.executeUpdate();
-
+            if (newQuantity == 0) {
+                deactivateProduct(oldName);
+            }
         } catch (SQLException e) {
             throw new DAOException("message");
         } catch (Exception e) {
@@ -440,6 +442,10 @@ public class ProductDao implements IProductDao {
             statement.setInt(5, categoryId);
             statement.setInt(6, productID);
             statement.executeUpdate();
+            Product justEdited = getProductById(productID);
+            if (justEdited.getAmount() == 0) {
+                deactivateProduct(justEdited.getName());
+            }
 
         } catch (SQLException e) {
             throw new DAOException("message");
