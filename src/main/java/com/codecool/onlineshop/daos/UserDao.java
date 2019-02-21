@@ -275,8 +275,8 @@ public class UserDao implements IUserDao {
 
         Date dateOfNow = new Date();
         Long timeOfNow = dateOfNow.getTime();
-        long timeFromPaymentToSend = 60000;
-        long timeFromSendToDeliver = 120000;
+        long timeFromPaymentToSend = 30000;
+        long timeFromSendToDeliver = 40000;
 
         Statement stmt = null;
         Statement stmt2 = null;

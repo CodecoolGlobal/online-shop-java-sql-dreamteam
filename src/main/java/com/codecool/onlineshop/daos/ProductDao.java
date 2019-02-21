@@ -563,7 +563,7 @@ public class ProductDao implements IProductDao {
                 stmt.close();
 
                 stmt = databaseConnector.getConnection().createStatement();
-                String sql2 ="UPDATE PRODUCTS set RATE = (SUM_OF_RATES/NUMBER_OF_RATES)"
+                String sql2 ="UPDATE PRODUCTS set RATE = ROUND(CAST(SUM_OF_RATES AS FLOAT)/CAST(NUMBER_OF_RATES AS FLOAT), 2)"
                         + " WHERE NAME = '" + entry.getKey().toLowerCase() + "';";
                 stmt.executeUpdate(sql2);
                 databaseConnector.getConnection().commit();
