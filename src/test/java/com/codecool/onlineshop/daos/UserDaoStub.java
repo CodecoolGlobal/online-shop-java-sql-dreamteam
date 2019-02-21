@@ -1,5 +1,6 @@
 package com.codecool.onlineshop.daos;
 
+import com.codecool.onlineshop.containers.Basket;
 import com.codecool.onlineshop.containers.Order;
 import com.codecool.onlineshop.models.Admin;
 import com.codecool.onlineshop.models.Customer;
@@ -54,7 +55,7 @@ public class UserDaoStub extends UserDao {
     }
 
     @Override
-    public void addOrder(String userLogin, String status, Date created_at) throws DAOException {
+    public void addOrder(String userLogin, String status, Date created_at, Basket basket) throws DAOException {
         User currentUser = null;
         for (User user : users) {
             if (user.getName().equals(userLogin)) {
