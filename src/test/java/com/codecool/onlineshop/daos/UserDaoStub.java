@@ -1,79 +1,71 @@
-//package com.codecool.onlineshop.daos;
-//
-//
-//import com.codecool.onlineshop.containers.Order;
-//import com.codecool.onlineshop.models.Admin;
-//import com.codecool.onlineshop.models.Customer;
-//import com.codecool.onlineshop.models.User;
-//
-//import java.util.*;
-//
-//public class UserDaoStub extends UserDao {
-//    Map<String, User> users = new HashMap<>();
-//    List<Order> orders = new ArrayList<>();
-//
-//
-//    public UserDaoStub() {
-//        super();
-//        populateDataBase();
-//    }
-//
-//    @Override
-//    public void createTables(){
-//
-//    }
-//
-//
-//    public void populateDataBase() {
-//        users.put("A", new User("kamil", "bed"));
-//        users.put("C", new User("patryk", "ma"));
-//        orders.add(new Order(3, null, new User(patryk, ma), new Date(Long.valueOf("1549569037241")), null));
-//        orders.add(new Order(4, null, new User(patryk, ma), new Date(Long.valueOf("1549577935108")), null));
-//    }
-//
-//
-//
-//
-//    @Override
-//    public User getUser(String login, String password) throws DAOException {
-//        for (Map.Entry<String, User> entry : users.entrySet()) {
-//            if (entry.getValue().getName() == login & entry.getValue().getPassword() == password) {
-//                if (entry.getKey() == "A") {
-//                    return new Admin(login, password);
-//                } else if (entry.getKey() == "C") {
-//                    return new Customer(login, password);
-//                }
-//            }
-//        }
-//        return null;
-//    }
-//
-//
-////    @Override
-////    public List<Order> getAllOrders() throws DAOException {
-////
-////    }
-//
-//
-//
-////    @Override
-////    public List<Order> getOrdersByUserName(String userName) throws DAOException{
-////
-////    }
-//
-//
-//    @Override
-//    public void addOrder(String userLogin, String status, Date created_at) throws DAOException{
-//
-//    }
-//
-//    @Override
-//    public void addCustomer(String login, String password) throws DAOException{
-//
-//    }
-//
-//
-//}
-//
-//
-//
+package com.codecool.onlineshop.daos;
+
+import com.codecool.onlineshop.containers.Order;
+import com.codecool.onlineshop.models.Admin;
+import com.codecool.onlineshop.models.Customer;
+import com.codecool.onlineshop.models.User;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class UserDaoStub extends UserDao {
+
+    List<User> users = new ArrayList<>();;
+    List<Order> orders = new ArrayList<>();;
+
+    public UserDaoStub() {
+        populateListsWithData();
+    }
+
+    private void populateListsWithData() {
+        users.add(new Customer("patryk", "ma"));
+        users.add(new Admin("kamil", "bed"));
+
+        orders.add(new Order(3, null, users.get(0), new Date(Long.valueOf("1549569037241")), null, "submitted"));
+        orders.add(new Order(4, null, users.get(0), new Date(Long.valueOf("1549577935108")), null, "submitted"));
+    }
+
+    @Override
+    public User getUser(String login, String password) throws DAOException {
+        if (login.equals("kamil") && password.equals("bed")) {
+            return (Admin) users.get(1);
+        }
+        if (login.equals("patryk") && password.equals("ma")) {
+            return (Customer) users.get(0);
+        }
+        throw new DAOException("Wrong login or password");
+    }
+
+    @Override
+    public List<Order> getAllOrders() throws DAOException {
+        return orders;
+    }
+
+    @Override
+    public List<Order> getOrdersByUserName(String userName) throws DAOException {
+        List<Order> userOrders = new ArrayList<>();
+        for (Order order : orders) {
+            if (order.getUser().getName().equals(userName)) {
+                userOrders.add(order);
+            }
+        }
+        return userOrders;
+    }
+
+    @Override
+    public void addOrder(String userLogin, String status, Date created_at) throws DAOException {
+        User currentUser = null;
+        for (User user : users) {
+            if (user.getName().equals(userLogin)) {
+                currentUser = user;
+            }
+        }
+        orders.add(new Order(orders.get(orders.size()-1).getId() + 1, null, currentUser, created_at, null, status));
+    }
+
+    @Override
+    public void addCustomer(String login, String password) throws DAOException {
+        //not used yet
+    }
+}
