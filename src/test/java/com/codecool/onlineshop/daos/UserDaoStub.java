@@ -11,8 +11,8 @@ import java.util.List;
 
 public class UserDaoStub extends UserDao {
 
-    List<User> users;
-    List<Order> orders;
+    List<User> users = new ArrayList<>();;
+    List<Order> orders = new ArrayList<>();;
 
     public UserDaoStub() {
         populateListsWithData();
